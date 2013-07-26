@@ -9,3 +9,66 @@ Author URI: http://claudionoguera.tk/blog
 License: A "Slug" license name e.g. GPL2
 */
 ?>
+
+<?php
+/*
+
+// Hack the plugin location, because of symlinks
+$my_plugin_file = __FILE__;
+ 
+if (isset($plugin)) {
+	$my_plugin_file = $plugin;
+}
+else if (isset($mu_plugin)) {
+	$my_plugin_file = $mu_plugin;
+}
+else if (isset($network_plugin)) {
+	$my_plugin_file = $network_plugin;
+}
+ 
+define('MY_PLUGIN_FILE', $my_plugin_file);
+define('MY_PLUGIN_PATH', WP_PLUGIN_DIR.'/'.basename(dirname($my_plugin_file)));
+*/
+
+// Require every single widget file
+require('w_visited_countries.php');
+
+
+// register Widgets
+function register_map_widgets() {
+    register_widget( 'Visited_Countries' );
+}
+
+
+if (!class_exists("KmC2_Maps")) { 
+	class KmC2_Maps extends WP_Widget {
+
+		public function __construct() { 
+			// register actions 
+			add_action( 'widgets_init', 'register_map_widgets' );
+		} // END public function __construct 
+		public static function activate() { 
+			// Do nothing 
+		} // END public static function activate 
+
+		public static function deactivate() { 
+			// Do nothing 
+		} // END public static function deactivate 
+
+		public function test_plugin () {
+			echo ("esta función está dentro del plugin");
+		}
+	}
+} //End Class KmC2_Maps
+
+if(class_exists('KmC2_Maps')) { 
+	// Installation and uninstallation hooks 
+	register_activation_hook(__FILE__, array('KmC2_Maps', 'activate')); 
+	register_deactivation_hook(__FILE__, array('KmC2_Maps', 'deactivate')); 
+
+	// instantiate the plugin class 
+	$maps_plugin = new KmC2_Maps(); 
+}
+
+
+?>

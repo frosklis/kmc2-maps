@@ -2,12 +2,10 @@
 
 basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
 
+// vc significa visited countries
+var vc = {};
+
 function visited_countries () {
-  var width,
-      height,
-      centered;
-
-
   var aux, proj;
   var options = [];
 
@@ -17,21 +15,21 @@ function visited_countries () {
   var svg;
 
   d3.select(".visited-countries-map svg").remove();
-  svg = d3.select(".visited-countries-map").append("svg");
+  vc.svg = d3.select(".visited-countries-map").append("svg");
 
-  width = jQuery(".visited-countries-map svg").width();
+  vc.width = jQuery(".visited-countries-map svg").width();
 
-  var g = svg.append("g");
+  vc.g = vc.svg.append("g");
 
-  var projection;
+  //var vc.projection;
 
-  projection = d3.geo.equirectangular()
+  vc.projection = d3.geo.equirectangular()
     .scale(1)
     .center([0,0])
     .precision(.1);
 
-  var path = d3.geo.path()
-      .projection(projection);
+  vc.path = d3.geo.path()
+      .projection(vc.projection);
 
   var visited = [];
   d3.csv(basepath+"data/visited.csv")
@@ -69,7 +67,7 @@ function visited_countries () {
       }
 
       d3.geo.bounds(world.features[j]).forEach(function(coords) {
-          coords = projection(coords);
+          coords = vc.projection(coords);
           var x = coords[0],
               y = coords[1];
           if (x < left_border) left_border = x;
@@ -81,19 +79,20 @@ function visited_countries () {
     }
 
     // Cambiar escala en función de la anchura de la pantalla
-    projection.scale(width / (right_border-left_border));
+    vc.projection.scale(vc.width / (right_border-left_border));
     // Definir altura y centrar
-    height = width * (lower_border-upper_border) / (right_border-left_border);
-    svg
-      .attr("width", width)
-      .attr("height", height);
-    projection.translate([width / 2, height / 2]);
+    vc.height = vc.width * (lower_border-upper_border) / (right_border-left_border);
+    vc.svg
+      .attr("width", vc.width)
+      .attr("height", vc.height);
+    vc.projection.translate([vc.width / 2, vc.height / 2]);
+    vc.aspectratio = vc.width / vc.height;
 
 
-    g.selectAll('path')
+    vc.g.selectAll('path')
       .data(world.features)
       .enter().append('path')
-        .attr('d', d3.geo.path().projection(projection))
+        .attr('d', d3.geo.path().projection(vc.projection))
         .attr('id', function(d){return d.properties.adm0_a3})
         .attr('class', function(d) {
           // if (d.properties.juntos == undefined) {
@@ -118,45 +117,59 @@ function visited_countries () {
         .on("click", clicked);
   }
   );
+}
 
+// http://bl.ocks.org/mbostock/2206590
+function clicked(d) {
+  var x, y, k;
+  var width, height;
+  width = vc.width * vc.mult;
+  height = vc.height * vc.mult;
 
+  if (d && vc.centered !== d) {
+    var centroid = vc.path.centroid(d);
+    var bounds = vc.path.bounds(d);
+    x = centroid[0] + (width-vc.width) / 2;
+    y = centroid[1] + (height-vc.height) / 2;
 
-  // http://bl.ocks.org/mbostock/2206590
-  function clicked(d) {
-    var x, y, k;
-
-    if (d && centered !== d) {
-      var centroid = path.centroid(d);
-      var bounds = path.bounds(d);
-      x = centroid[0];
-      y = centroid[1];
-
-      var maxKx, maxKy;
-      maxKx = width / Math.abs(bounds[0][0] - bounds[1][0]);
-      maxKy = height / Math.abs(bounds[0][1] - bounds[1][1]);
-      // k = 4;
-      k = Math.min(8,maxKy,maxKx);
-      centered = d;
-    } else {
-      x = width / 2;
-      y = height / 2;
-      k = 1;
-      centered = null;
-    }
-
-    g.selectAll("path")
-        .classed("active", centered && function(d) { return d === centered; });
-
-    g.transition()
-        .duration(750)
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-        .style("stroke-width", 1.5 / k + "px");
+    var maxKx, maxKy;
+    maxKx = width / Math.abs(bounds[0][0] - bounds[1][0]);
+    maxKy = height / Math.abs(bounds[0][1] - bounds[1][1]);
+    k = Math.min(8,maxKy,maxKx) * vc.mult;
+    vc.centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1 * vc.mult;
+    vc.centered = null;
   }
+
+  vc.g.selectAll("path")
+      .classed("active", vc.centered && function(d) { return d === vc.centered; });
+
+  var traslacion = "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")";
+  
+  traslacion += "translate(" + (width-vc.width) / 2 + "," + (height-vc.height) / 2 + ")";
+
+  vc.g.transition()
+      .duration(750)
+      .attr("transform", traslacion)
+      .style("stroke-width", 1.5 / k + "px");
+
+  console.log(traslacion);
 }
 
 jQuery(document).ready(function() {
+  vc.mult = 1.0;
   visited_countries();
 });
 jQuery(window).resize(function() {
-  visited_countries();
+  vc.mult = jQuery(".visited-countries-map svg").width() / vc.width;
+  vc.svg
+    .attr("width", vc.width*vc.mult)
+    .attr("height", vc.height*vc.mult);
+  vc.g.transition()
+    .duration(750)
+    .attr("transform", "scale(" + vc.mult + ")");
+  //clicked(null);
 });

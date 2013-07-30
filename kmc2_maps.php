@@ -32,11 +32,13 @@ define('MY_PLUGIN_PATH', WP_PLUGIN_DIR.'/'.basename(dirname($my_plugin_file)));
 
 // Require every single widget file
 require('w_visited_countries.php');
+require('w_viajes.php');
 
 
 // register Widgets
 function register_map_widgets() {
     register_widget( 'Visited_Countries' );
+    register_widget( 'Viajes');
 }
 
 

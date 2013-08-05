@@ -95,9 +95,6 @@ function visited_countries () {
         .attr('d', d3.geo.path().projection(vc.projection))
         .attr('id', function(d){return d.properties.adm0_a3})
         .attr('class', function(d) {
-          // if (d.properties.juntos == undefined) {
-          //   return "visited-none";
-          // }
           if (d.properties.juntos == 1) {
             return "visited-juntos";
           }

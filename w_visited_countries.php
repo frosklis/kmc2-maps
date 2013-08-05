@@ -107,5 +107,4 @@ class Visited_Countries extends WP_Widget {
 } // class Visited_Countries
 			
 
-
 ?>

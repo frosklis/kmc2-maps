@@ -23,7 +23,7 @@ class Viajes extends WP_Widget {
 		    wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', false );
 		    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', false );
 		    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', false );
-			wp_register_script( 'visited-countries', plugins_url( 'kmc2-maps/js/visited-countries.js' , ''), array( 'd3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
+			wp_register_script( 'viajes', plugins_url( 'kmc2-maps/js/viajes.js' , ''), array( 'd3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
 
 
 
@@ -37,7 +37,7 @@ class Viajes extends WP_Widget {
 		    wp_enqueue_script('d3-geo-projection');
 		    wp_enqueue_script('topojson');
 
-		    wp_enqueue_script('visited-countries');
+		    wp_enqueue_script('viajes');
 
 		    wp_enqueue_style('kmc2-maps');
 
@@ -106,6 +106,5 @@ class Viajes extends WP_Widget {
 
 } // class Visited_Countries
 			
-
 
 ?>

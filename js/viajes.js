@@ -86,11 +86,11 @@ function viajes () {
 }
 
 function hovered(d) {
-  // console.log("pasando por");
-  // console.log(d);
+  console.log("pasando por");
+  console.log(d);
 }
 function clicked(d) {
-  // console.log(d);
+  console.log(d);
 }
 
 jQuery(document).ready(function() {
@@ -110,8 +110,8 @@ jQuery(window).resize(function() {
 
 
 function cargarDatos(error, datosArr) {
-    // console.log("datosArr");
-    // console.log(datosArr);
+    console.log("datosArr");
+    console.log(datosArr);
 
     vv.visited = [];
 
@@ -127,7 +127,7 @@ function cargarDatos(error, datosArr) {
           d3.csv,
           basepath+'data/'+v["placesFile"],
           function (d) {
-            // console.log("un puntín");
+            console.log("un puntín");
             v["points"].push(
               {
                 sitio: d.sitio,
@@ -142,9 +142,9 @@ function cargarDatos(error, datosArr) {
     });
 }
 function dibujarRecorridos(name, data) {
-  // console.log("Dibujar recorridos");
-  // console.log(name);
-  // console.log(data);
+  console.log("Dibujar recorridos");
+  console.log(name);
+  console.log(data);
 
   var g = vv.svg.append("g")
     .attr("class","viaje");
@@ -159,7 +159,7 @@ function dibujarRecorridos(name, data) {
     route.coordinates.push([data[i].lon, data[i].lat]);
   }
 
-  // console.log(g);
+  console.log(g);
   g.append("path")
     .datum(route)
     .attr("class", "route")

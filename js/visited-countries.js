@@ -43,7 +43,8 @@ function visited_countries () {
           juntos: +d.juntos
         }); 
     }) 
-    .get(function(error, rows) { console.log(rows); });
+    .get(function(error, rows) { // console.log(rows); 
+    });
 
 
 
@@ -153,7 +154,7 @@ function clicked(d) {
       .attr("transform", traslacion)
       .style("stroke-width", 1.5 / k + "px");
 
-  console.log(traslacion);
+  // console.log(traslacion);
 }
 
 jQuery(document).ready(function() {

@@ -38,6 +38,11 @@ class Visited_Countries extends WP_Widget {
 		    wp_enqueue_script('topojson');
 
 		    wp_enqueue_script('visited-countries');
+		    wp_localize_script('visited-countries', 'visited_countries_vars', 
+		    	array(
+					'basepath' => plugins_url('kmc2-maps/','')
+					)
+				);
 
 		    wp_enqueue_style('kmc2-maps');
 

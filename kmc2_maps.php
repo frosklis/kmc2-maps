@@ -11,24 +11,6 @@ License: A "Slug" license name e.g. GPL2
 ?>
 
 <?php
-/*
-
-// Hack the plugin location, because of symlinks
-$my_plugin_file = __FILE__;
- 
-if (isset($plugin)) {
-	$my_plugin_file = $plugin;
-}
-else if (isset($mu_plugin)) {
-	$my_plugin_file = $mu_plugin;
-}
-else if (isset($network_plugin)) {
-	$my_plugin_file = $network_plugin;
-}
- 
-define('MY_PLUGIN_FILE', $my_plugin_file);
-define('MY_PLUGIN_PATH', WP_PLUGIN_DIR.'/'.basename(dirname($my_plugin_file)));
-*/
 
 // Require every single widget file
 require('w_visited_countries.php');

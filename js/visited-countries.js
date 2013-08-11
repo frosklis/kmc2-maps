@@ -1,7 +1,8 @@
 //var texto_prueba = d3.select(".visited-countries-map").append("p").text("Esto está escrito desde javascript");
 
-basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
-
+//basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
+basepath = visited_countries_vars.basepath;
+//
 // vc significa visited countries
 var vc = {};
 

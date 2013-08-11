@@ -30,7 +30,6 @@ class Viajes extends WP_Widget {
 			// register styles
 		    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
 
-
 		    // enqueue styles and scripts
 		    wp_enqueue_script('d3');
 		    wp_enqueue_script('queue');
@@ -38,12 +37,15 @@ class Viajes extends WP_Widget {
 		    wp_enqueue_script('topojson');
 
 		    wp_enqueue_script('viajes');
+		    wp_localize_script('viajes', 'viajes_vars',
+		    	array(
+					'basepath' => plugins_url('kmc2-maps/','')
+					)
+				);
 
 		    wp_enqueue_style('kmc2-maps');
 
-
-            // add_action( 'wp_head', array(&$this, 'recent_comments_style') );
-        }
+		}
 	}
 
 	/**

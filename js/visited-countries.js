@@ -53,7 +53,7 @@ function visited_countries () {
       right_border = -Infinity,
       upper_border = Infinity;
 
-  d3.json(basepath+'data/world.json', function(world) {
+  d3.json(basepath+'data/world-110m.json', function(world) {
     // Añadir propiedades
     for(j=0; j<world.features.length; j++) {
       // Paso de la Antártida

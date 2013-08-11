@@ -9,7 +9,6 @@ Author URI: http://claudionoguera.tk/blog
 License: A "Slug" license name e.g. GPL2
 */
 ?>
-
 <?php
 
 // Require every single widget file

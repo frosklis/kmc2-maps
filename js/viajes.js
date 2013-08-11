@@ -4,6 +4,23 @@ basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
 
 var vv = {};
 
+
+jQuery(document).ready(function() {
+  vv.mult = 1.0;
+  viajes();
+});
+jQuery(window).resize(function() {
+  vv.mult = jQuery(".trips-weve-made svg").width() / vv.width;
+  vv.svg
+    .attr("width", vv.width*vv.mult)
+    .attr("height", vv.height*vv.mult);
+  vv.g.transition()
+    .duration(750)
+    .attr("transform", "scale(" + vv.mult + ")");
+  //clicked(null);
+});
+
+
 function viajes () {
 
   // Cargar los datos
@@ -12,8 +29,49 @@ function viajes () {
       d3.json,
       basepath+'data/viajes.json'
     )
-    .awaitAll(cargarDatos);
+    .awaitAll(viajes_01);
+}
 
+function viajes_01(error, datosArr) {
+  vv.visited = [];
+
+  vv.data = [];
+
+  var datos = datosArr[0];
+
+  datos.forEach(function(v) {
+    v.countries.forEach(function(p){
+      if (vv.visited.indexOf(p) == -1) vv.visited.push(p);
+    });
+
+    v["points"] = [];
+    vv.data.push(v);
+
+
+    d3.csv(basepath+'data/'+v["placesFile"])
+      .row(function (d) {
+        v["points"].push(
+          {
+            sitio: d.sitio,
+            lat: +d.lat,
+            lon: +d.lon
+          });
+      })
+      .get(function(error, rows) { 
+        if (error == null) {
+          v["dataExists"] = true;
+        } else {
+          v["dataExists"] = false;
+        }
+      });
+
+  });
+
+  // Llamar a viajes_02
+  viajes_02();
+}
+
+function viajes_02 () {
   var aux, proj;
   var options = [];
 
@@ -29,8 +87,6 @@ function viajes () {
 
   vv.g = vv.svg.append("g");
 
-  //var vv.projection;
-
   vv.projection = d3.geo.equirectangular()
     .scale(1)
     .center([0,0])
@@ -39,15 +95,12 @@ function viajes () {
   vv.path = d3.geo.path()
       .projection(vv.projection);
 
-  vv.data = [];
-
-
   var left_border = Infinity,
       lower_border = -Infinity,
       right_border = -Infinity,
       upper_border = Infinity;
 
-  d3.json(basepath+'data/world.json', function(world) {
+  d3.json(basepath+'data/world-110m.json', function(world) {
     // Añadir propiedades
     for(j=0; j<world.features.length; j++) {
       d3.geo.bounds(world.features[j]).forEach(function(coords) {
@@ -76,77 +129,85 @@ function viajes () {
     vv.g.selectAll('path')
       .data(world.features)
       .enter().append('path')
-        .attr('d', d3.geo.path().projection(vv.projection))
         .attr('id', function(d){return d.properties.adm0_a3})
         .attr('class', 'land')
+        .attr('d', d3.geo.path().projection(vv.projection))
         .on("click", clicked)
         .on("mouseover", hovered);
   }
   );
+
+
+  // Dibujar los recorridos
+  var intervalo =
+        setInterval(function(){
+          vv.data.forEach(function (d) {            
+            dibujarRecorridos(d.slug, d.points);
+            if (d.dataExists != undefined) {
+              clearInterval(intervalo);
+            } 
+          });
+        }, 200);
 }
+
+
 
 function hovered(d) {
   console.log("pasando por");
   console.log(d);
 }
 function clicked(d) {
-  console.log(d);
-}
+  var x, y, k;
+  var width, height;
+  width = vv.width * vv.mult;
+  height = vv.height * vv.mult;
 
-jQuery(document).ready(function() {
-  vv.mult = 1.0;
-  viajes();
-});
-jQuery(window).resize(function() {
-  vv.mult = jQuery(".trips-weve-made svg").width() / vv.width;
-  vv.svg
-    .attr("width", vv.width*vv.mult)
-    .attr("height", vv.height*vv.mult);
+  if (d && vv.centered !== d) {
+    var centroid = vv.path.centroid(d);
+    var bounds = vv.path.bounds(d);
+    x = centroid[0] + (width-vv.width) / 2;
+    y = centroid[1] + (height-vv.height) / 2;
+
+    var maxKx, maxKy;
+    maxKx = width / Math.abs(bounds[0][0] - bounds[1][0]);
+    maxKy = height / Math.abs(bounds[0][1] - bounds[1][1]);
+    k = Math.min(8,maxKy,maxKx) * vv.mult;
+    vv.centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1 * vv.mult;
+    vv.centered = null;
+  }
+
+  vv.g.selectAll("path")
+      .classed("active", vv.centered && function(d) { return d === vv.centered; });
+
+  var traslacion = "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")";
+  
+  traslacion += "translate(" + (width-vv.width) / 2 + "," + (height-vv.height) / 2 + ")";
+
   vv.g.transition()
-    .duration(750)
-    .attr("transform", "scale(" + vv.mult + ")");
-  //clicked(null);
-});
+      .duration(750)
+      .attr("transform", traslacion);
 
 
-function cargarDatos(error, datosArr) {
-    console.log("datosArr");
-    console.log(datosArr);
+  vv.g.selectAll(".route")
+      .transition()
+        .duration(750)
+        .style("stroke-width", 1 / k + "px");
 
-    vv.visited = [];
-
-    var datos = datosArr[0];
-    datos.forEach(function(v) {
-      v.countries.forEach(function(p){
-        if (vv.visited.indexOf(p) == -1) vv.visited.push(p);
-      });
-      v["points"] = [];
-      vv.data.push(v);
-      queue()
-        .defer(
-          d3.csv,
-          basepath+'data/'+v["placesFile"],
-          function (d) {
-            console.log("un puntín");
-            v["points"].push(
-              {
-                sitio: d.sitio,
-                lat: +d.lat,
-                lon: +d.lon
-              });
-          }
-        )
-        .awaitAll(function(error, data) {
-          dibujarRecorridos(v["name"],v["points"]);
-        });
-    });
+  // console.log(traslacion);
 }
+
+
 function dibujarRecorridos(name, data) {
   console.log("Dibujar recorridos");
   console.log(name);
   console.log(data);
 
-  var g = vv.svg.append("g")
+  var g = vv.g.append("g")
+    .attr("id", name)
     .attr("class","viaje");
 
 
@@ -157,9 +218,7 @@ function dibujarRecorridos(name, data) {
 
   for(i=0;i<data.length;i++) {
     route.coordinates.push([data[i].lon, data[i].lat]);
-  }
-
-  console.log(g);
+  }  console.log(g);
   g.append("path")
     .datum(route)
     .attr("class", "route")

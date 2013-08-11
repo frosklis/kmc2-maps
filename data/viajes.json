@@ -1,0 +1,52 @@
+[
+	{
+		"year":2008,
+		"name": "Norte de Italia",
+		"slug": "norte-de-italia",
+		"placesFile": "italia_norte.csv",
+		"days": 8,
+		"countries": ["ITA"]
+	},
+	{
+		"year":2009,
+		"name": "Turquía",
+		"placesFile": "turquia.csv",
+		"days": 8,
+		"countries": ["TUR"]
+	},
+	{
+		"year":2010,
+		"name": "Sicilia",
+		"placesFile": "sicilia.csv",
+		"days": 8,
+		"countries": ["ITA"]
+	},
+	{
+		"year":2011,
+		"name": "Centroeuropa",
+		"placesFile": "italia_norte.csv",
+		"days": 8,
+		"countries": ["CZK","DEU","POL","SVK","HUN","AUT"]
+	},
+	{
+		"year":2012,
+		"name": "Normandía",
+		"placesFile": "normandia.csv",
+		"days": 8,
+		"countries": ["FRA","BEL"]
+	},
+	{
+		"year":2012,
+		"name": "Transmongoliano",
+		"placesFile": "transmongoliano.csv",
+		"days": 8,
+		"countries": ["RUS","MNG","CHN"]
+	},
+	{
+		"year":2013,
+		"name": "Bolivia",
+		"placesFile": "bolivia.csv",
+		"days": 8,
+		"countries": ["BOL"]
+	}
+]

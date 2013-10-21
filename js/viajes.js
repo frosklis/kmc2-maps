@@ -1,6 +1,3 @@
-//var texto_prueba = d3.select(".trips-weve-made").append("p").text("Esto está escrito desde javascript");
-
-//basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
 basepath = viajes_vars.basepath;
 
 var vv = {};

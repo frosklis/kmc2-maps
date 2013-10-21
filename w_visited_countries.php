@@ -23,7 +23,7 @@ class Visited_Countries extends WP_Widget {
 		    wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', false );
 		    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', false );
 		    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', false );
-			wp_register_script( 'visited-countries', plugins_url( 'kmc2-maps/js/visited-countries.js' , ''), array( 'd3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
+			wp_register_script( 'visited-countries', plugins_url( 'kmc2-maps/js/visited-countries.js' , ''), array( 'jQuery', 'd3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
 
 
 
@@ -65,8 +65,8 @@ class Visited_Countries extends WP_Widget {
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
-		echo('<div class="visited-countries-map">');
-		echo('</div>');
+		echo('<div class="kmc2-maps-plugin"><div class="visited-countries-map">');
+		echo('</div></div>');
 		echo $args['after_widget'];
 	}
 

@@ -56,4 +56,5 @@
 .kmc2-maps-plugin svg {
   border: solid 1px black;
   width: 100%;
+  height: auto;
 }

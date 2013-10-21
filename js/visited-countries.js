@@ -1,3 +1,5 @@
+console.log("esto se está ejecutantdo");
+
 //var texto_prueba = d3.select(".visited-countries-map").append("p").text("Esto está escrito desde javascript");
 
 //basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";

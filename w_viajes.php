@@ -23,7 +23,7 @@ class Viajes extends WP_Widget {
 		    wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', false );
 		    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', false );
 		    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', false );
-			wp_register_script( 'viajes', plugins_url( 'kmc2-maps/js/viajes.js' , ''), array( 'd3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
+			wp_register_script( 'viajes', plugins_url( 'kmc2-maps/js/viajes.js' , ''), array( 'jquery','d3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
 
 
 
@@ -62,8 +62,8 @@ class Viajes extends WP_Widget {
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
-		echo('<div class="trips-weve-made">');
-		echo('</div>');
+		echo('<div class="kmc2-maps-plugin"><div class="trips-weve-made">');
+		echo('</div></div>');
 		echo $args['after_widget'];
 	}
 

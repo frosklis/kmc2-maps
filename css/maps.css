@@ -1,59 +1,60 @@
-.graticule {
+.kmc2-maps-plugin .graticule {
   fill: none;
   stroke: #777;
   stroke-width: .5px;
   stroke-opacity: .5;
 }
-.land,
-.visited-none {
+.kmc2-maps-plugin .land,
+.kmc2-maps-plugin .visited-none {
   fill: #bbb;
   stroke: #fff;
   stroke-width: .5px;
 }
-.visited-ceci {
+.kmc2-maps-plugin .visited-ceci {
   fill: #fbb;
   stroke: #fff;
   stroke-width: .5px;
 }
-.visited-claudio {
+.kmc2-maps-plugin .visited-claudio {
   fill: #bfb;
   stroke: #fff;
   stroke-width: .5px;
 }
-.visited-juntos {
+.kmc2-maps-plugin .visited-juntos {
   fill: #bbf;
   stroke: #fff;
   stroke-width: .5px;
 }
-.visited-separados {
+.kmc2-maps-plugin .visited-separados {
   fill: #fbf;
   stroke: #fff;
   stroke-width: .5px;
 }
-.active {
+.kmc2-maps-plugin .active {
   fill: orange;
 }
-.boundary {
+.kmc2-maps-plugin .boundary {
   fill: none;
   stroke: #000;
   stroke-width: .5px;
 }
-.points circle {
+.kmc2-maps-plugin .points circle {
   fill: #fff;
   stroke: red;
   stroke-width: 2px;
 }
-.points text {
+.kmc2-maps-plugin .points text {
   font: 11px sans-serif;
   text-anchor: middle;
   text-shadow: 0 1px 0 #ffffff, 0 -1px 0 #ffffff, 1px 0 0 #ffffff, -1px 0 0 #ffffff;
 }
-.route {
+.kmc2-maps-plugin .route {
   fill: none;
   stroke: red;
   stroke-width: 1px;
 }
-svg {
+.kmc2-maps-plugin svg {
   border: solid 1px black;
   width: 100%;
+  height: auto;
 }

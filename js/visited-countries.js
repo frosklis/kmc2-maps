@@ -1,10 +1,5 @@
-console.log("esto se está ejecutantdo");
-
-//var texto_prueba = d3.select(".visited-countries-map").append("p").text("Esto está escrito desde javascript");
-
-//basepath = "http://localhost/kmc2/wp-content/plugins/kmc2-maps/";
 basepath = visited_countries_vars.basepath;
-//
+
 // vc significa visited countries
 var vc = {};
 
@@ -26,13 +21,14 @@ function visited_countries () {
 
   //var vc.projection;
 
-  vc.projection = d3.geo.equirectangular()
+  vc.projection = d3.geo.winkel3()
     .scale(1)
     .center([0,0])
     .precision(.1);
 
   vc.path = d3.geo.path()
       .projection(vc.projection);
+
 
   var visited = [];
   d3.csv(basepath+"data/visited.csv")
@@ -56,7 +52,11 @@ function visited_countries () {
       right_border = -Infinity,
       upper_border = Infinity;
 
-  d3.json(basepath+'data/world-110m.json', function(world) {
+  d3.json(basepath+'data/world-110m.json', function(error, world) {
+
+    if (error) return console.warn(error);
+
+
     // Añadir propiedades
     for(j=0; j<world.features.length; j++) {
       // Paso de la Antártida
@@ -115,13 +115,15 @@ function visited_countries () {
           return "visited-none";
 
         })
-        .on("click", clicked);
+        .on("click", vc.clicked);
   }
   );
+ 
 }
 
 // http://bl.ocks.org/mbostock/2206590
-function clicked(d) {
+vc.clicked = function (d) {
+  console.log(d);
   var x, y, k;
   var width, height;
   width = vc.width * vc.mult;
@@ -156,9 +158,7 @@ function clicked(d) {
       .duration(750)
       .attr("transform", traslacion)
       .style("stroke-width", 1.5 / k + "px");
-
-  // console.log(traslacion);
-}
+};
 
 jQuery(document).ready(function() {
   vc.mult = 1.0;

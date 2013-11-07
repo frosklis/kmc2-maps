@@ -130,8 +130,8 @@ function viajes_02 () {
         .attr('id', function(d){return d.properties.adm0_a3})
         .attr('class', 'land')
         .attr('d', d3.geo.path().projection(vv.projection))
-        .on("click", clicked)
-        .on("mouseover", hovered);
+        .on("click",vv. clicked)
+        .on("mouseover", vv.hovered);
   }
   );
 
@@ -150,11 +150,11 @@ function viajes_02 () {
 
 
 
-function hovered(d) {
+vv.hovered = function (d) {
   console.log("pasando por");
   console.log(d);
-}
-function clicked(d) {
+};
+vv.clicked = function (d) {
   var x, y, k;
   var width, height;
   width = vv.width * vv.mult;
@@ -196,7 +196,7 @@ function clicked(d) {
         .style("stroke-width", 1 / k + "px");
 
   // console.log(traslacion);
-}
+};
 
 
 function dibujarRecorridos(name, data) {

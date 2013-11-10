@@ -14,12 +14,14 @@ License: A "Slug" license name e.g. GPL2
 // Require every single widget file
 require('w_visited_countries.php');
 require('w_viajes.php');
+require('w_visualization.php');
 
 
 // register Widgets
 function register_map_widgets() {
     register_widget( 'Visited_Countries' );
     register_widget( 'Viajes');
+    register_widget( 'Kmc2_Visualization');
 }
 
 
@@ -104,4 +106,51 @@ function categoriesColumnsRow($argument, $columnName, $categoryID){
         }
 }
 add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
+
+
+
+
+// AJAX
+
+function prueba_AJAX() {
+	$results = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+	die(json_encode($results));
+}
+// creating Ajax call for WordPress
+add_action( 'wp_ajax_prueba_AJAX', 'prueba_AJAX' );
+add_action( 'wp_ajax_nopriv_prueba_AJAX', 'prueba_AJAX' );
+
+
+
+function kmc2_country_trips() {
+	global $wpdb;
+
+	$query = 'select a.*, b.name, b.slug
+		from
+			(
+			select taxonomy_id, meta_key, meta_value as visited_countries
+			from wp_taxonomymeta
+			where meta_key = "kmc2-visited-countries"
+			) a,
+			wp_terms b
+		where a.taxonomy_id = b.term_id';
+	$myrows = $wpdb->get_results( $query );
+
+	$countries = array();
+	foreach ($myrows as $row) {
+		$c = explode(',', $row->visited_countries);
+		for ($i = 0; $i < count($c); $i++) {
+			if(!isset($countries[$c[$i]])) {
+				$countries[$c[$i]] = array();
+			}
+			array_push($countries[$c[$i]], array(
+				"category" => $row->name,
+				"slug" => $row->slug));
+		}
+	}
+	die(json_encode($countries));
+
+}
+add_action( 'wp_ajax_kmc2_country_trips', 'kmc2_country_trips' );
+add_action( 'wp_ajax_nopriv_kmc2_country_trips', 'kmc2_country_trips' );
 ?>

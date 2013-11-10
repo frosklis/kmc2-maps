@@ -53,8 +53,27 @@
   stroke: red;
   stroke-width: 1px;
 }
+.kmc2-maps-plugin .country {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.5px;
+}
+.kmc2-maps-plugin .country:hover {
+  fill: green;
+}
 .kmc2-maps-plugin svg {
   border: solid 1px black;
   width: 100%;
   height: auto;
+}
+.kmc2-maps-plugin .trips-visualization-map {
+  position: relative;
+}
+.kmc2-maps-plugin .trips-visualization-map .legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.kmc2-maps-plugin .trips-visualization-map .invisible {
+  display: none;
 }

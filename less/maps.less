@@ -1,70 +1,91 @@
 .kmc2-maps-plugin {
 
   .graticule {
-  fill: none;
-  stroke: #777;
-  stroke-width: .5px;
-  stroke-opacity: .5;
+    fill: none;
+    stroke: #777;
+    stroke-width: .5px;
+    stroke-opacity: .5;
   }
 
   .land, .visited-none {
-  fill: #bbb;  
-  stroke: #fff;
-  stroke-width: .5px;
+    fill: #bbb;  
+    stroke: #fff;
+    stroke-width: .5px;
   }
 
   .visited-ceci {
-  fill: #fbb;  
-  stroke: #fff;
-  stroke-width: .5px;
+    fill: #fbb;  
+    stroke: #fff;
+    stroke-width: .5px;
   }
   .visited-claudio {
-  fill: #bfb;  
-  stroke: #fff;
-  stroke-width: .5px;
+    fill: #bfb;  
+    stroke: #fff;
+    stroke-width: .5px;
   }
   .visited-juntos {
-  fill: #bbf;  
-  stroke: #fff;
-  stroke-width: .5px;
+    fill: #bbf;  
+    stroke: #fff;
+    stroke-width: .5px;
   }
   .visited-separados {
-  fill: #fbf;  
-  stroke: #fff;
-  stroke-width: .5px;
+    fill: #fbf;  
+    stroke: #fff;
+    stroke-width: .5px;
   }
 
   .active {
-  fill: orange;
+    fill: orange;
   }
 
   .boundary {
-  fill: none;
-  stroke: #000;
-  stroke-width: .5px;
+    fill: none;
+    stroke: #000;
+    stroke-width: .5px;
   }
 
   .points circle {
-  fill: #fff;
-  stroke: red;
-  stroke-width: 2px;
+    fill: #fff;
+    stroke: red;
+    stroke-width: 2px;
   }
 
   .points text {
-  font: 11px sans-serif;
-  text-anchor: middle;
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+    font: 11px sans-serif;
+    text-anchor: middle;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
   }
 
   .route {
-  fill: none;
-  stroke: red;
-  stroke-width: 1px;
+    fill: none;
+    stroke: red;
+    stroke-width: 1px;
+  }
+
+  .country {
+    fill: white;
+    stroke: black;
+    stroke-width: 0.5px;
+    &:hover {
+      fill: green;
+    }
   }
 
   svg {
     border: solid 1px black;
     width: 100%;
     height: auto;
+  }
+
+  .trips-visualization-map {
+    position: relative;
+    .legend {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .invisible {
+      display: none;
+    }
   }
 }

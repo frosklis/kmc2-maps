@@ -1,6 +1,7 @@
-.kmc2-maps-plugin .graticule {
+.kmc2-maps-plugin .graticule,
+.kmc2-maps-plugin .sphere {
   fill: none;
-  stroke: #777;
+  stroke: #ccc;
   stroke-width: .5px;
   stroke-opacity: .5;
 }
@@ -10,33 +11,10 @@
   stroke: #fff;
   stroke-width: .5px;
 }
-.kmc2-maps-plugin .visited-ceci {
-  fill: #fbb;
-  stroke: #fff;
-  stroke-width: .5px;
-}
-.kmc2-maps-plugin .visited-claudio {
-  fill: #bfb;
-  stroke: #fff;
-  stroke-width: .5px;
-}
-.kmc2-maps-plugin .visited-juntos {
-  fill: #bbf;
-  stroke: #fff;
-  stroke-width: .5px;
-}
-.kmc2-maps-plugin .visited-separados {
-  fill: #fbf;
-  stroke: #fff;
-  stroke-width: .5px;
-}
 .kmc2-maps-plugin .active {
   fill: orange;
-}
-.kmc2-maps-plugin .boundary {
-  fill: none;
-  stroke: #000;
-  stroke-width: .5px;
+  stroke: #2a7fff !important;
+  stroke-opacity: 1 !important;
 }
 .kmc2-maps-plugin .points circle {
   fill: #fff;
@@ -53,8 +31,49 @@
   stroke: red;
   stroke-width: 1px;
 }
+.kmc2-maps-plugin .country {
+  fill: white;
+  fill-opacity: 0.5;
+  stroke: none;
+}
+.kmc2-maps-plugin .coast {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
+.kmc2-maps-plugin .boundary {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
 .kmc2-maps-plugin svg {
-  border: solid 1px black;
   width: 100%;
   height: auto;
+}
+.kmc2-maps-plugin .trips-visualization-map {
+  position: relative;
+}
+.kmc2-maps-plugin .trips-visualization-map .legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+}
+.kmc2-maps-plugin .trips-visualization-map .invisible {
+  display: none;
+}
+.kmc2-maps-plugin .trips-visualization-map .selected {
+  fill-color: black;
+  fill-opacity: 50%;
+}
+.kmc2-maps-plugin .trips-visualization-map .highlight {
+  fill: #ff7f2a;
+  fill-opacity: 50%;
+  stroke-width: 1px;
+  stroke: solid;
+}
+.kmc2-maps-plugin .trips-visualization-map .highlight:hover {
+  fill: #f01d4f;
 }

@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
 
 	d3.json(ajaxUrl + "?action=kmc2_country_trips", function(error, json) {
 		if (error) return console.warn(error);
-		console.log(json);
+		// console.log(json);
 
 
 		world.legend = 

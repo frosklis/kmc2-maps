@@ -85,7 +85,7 @@ function Kmc2_Maps (parameters) {
 
 
 		vis.graticule = d3.geo.graticule();
-		console.log(vis.graticule);
+
 		vis.g.append("path")
 		    .datum(vis.graticule)
 		    .attr("class", "graticule")

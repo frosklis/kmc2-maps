@@ -1,91 +1,123 @@
+@kmc2-pink:         #f01d4f;
+@kmc2-blue:         #2a7fff;
+@kmc2-orange:       #ff7f2a;
+@kmc2-country-line:	#000000;
+.black(@op: 1) {
+    background-color: rgba(0,0,0,@op);
+}
+.white(@op: 1) {
+    background-color: rgba(255,255,255,@op);
+}
 .kmc2-maps-plugin {
+	.graticule, .sphere {
+		fill: none;
+		stroke: #ccc;
+		stroke-width: .5px;
+		stroke-opacity: .5;
+	}
 
-  .graticule {
-    fill: none;
-    stroke: #777;
-    stroke-width: .5px;
-    stroke-opacity: .5;
-  }
+	.land, .visited-none {
+		fill: #bbb;  
+		stroke: #fff;
+		stroke-width: .5px;
+	}
 
-  .land, .visited-none {
-    fill: #bbb;  
-    stroke: #fff;
-    stroke-width: .5px;
-  }
+	// .visited-ceci {
+	// 	fill: #fbb;  
+	// 	stroke: #fff;
+	// 	stroke-width: .5px;
+	// }
+	// .visited-claudio {
+	// 	fill: #bfb;  
+	// 	stroke: #fff;
+	// 	stroke-width: .5px;
+	// }
+	// .visited-juntos {
+	// 	fill: #bbf;  
+	// 	stroke: #fff;
+	// 	stroke-width: .5px;
+	// }
+	// .visited-separados {
+	// 	fill: #fbf;  
+	// 	stroke: #fff;
+	// 	stroke-width: .5px;
+	// }
 
-  .visited-ceci {
-    fill: #fbb;  
-    stroke: #fff;
-    stroke-width: .5px;
-  }
-  .visited-claudio {
-    fill: #bfb;  
-    stroke: #fff;
-    stroke-width: .5px;
-  }
-  .visited-juntos {
-    fill: #bbf;  
-    stroke: #fff;
-    stroke-width: .5px;
-  }
-  .visited-separados {
-    fill: #fbf;  
-    stroke: #fff;
-    stroke-width: .5px;
-  }
+	.active {
+		fill: orange;
+		stroke: @kmc2-blue !important;
+		stroke-opacity: 1 !important;
+	}
 
-  .active {
-    fill: orange;
-  }
 
-  .boundary {
-    fill: none;
-    stroke: #000;
-    stroke-width: .5px;
-  }
+	.points circle {
+		fill: #fff;
+		stroke: red;
+		stroke-width: 2px;
+	}
 
-  .points circle {
-    fill: #fff;
-    stroke: red;
-    stroke-width: 2px;
-  }
+	.points text {
+		font: 11px sans-serif;
+		text-anchor: middle;
+		text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+	}
 
-  .points text {
-    font: 11px sans-serif;
-    text-anchor: middle;
-    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-  }
+	.route {
+		fill: none;
+		stroke: red;
+		stroke-width: 1px;
+	}
 
-  .route {
-    fill: none;
-    stroke: red;
-    stroke-width: 1px;
-  }
+	.country {
+		fill: white;
+		fill-opacity: 0.5;
+		stroke: none;
+	}  
+	.coast {
+		fill: none;
+		stroke: @kmc2-country-line;
+		stroke-width: 0.5px;
+		stroke-opacity: 1;
+	}
+	.boundary {
+		fill: none;
+		stroke: @kmc2-country-line;
+		stroke-width: 0.5px;
+		stroke-opacity: 1;
+	}
 
-  .country {
-    fill: white;
-    stroke: black;
-    stroke-width: 0.5px;
-    &:hover {
-      fill: green;
-    }
-  }
+	svg {
+		// border: solid 1px black;
+		width: 100%;
+		height: auto;
+	}
 
-  svg {
-    border: solid 1px black;
-    width: 100%;
-    height: auto;
-  }
+	.trips-visualization-map {
+		position: relative;
 
-  .trips-visualization-map {
-    position: relative;
-    .legend {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .invisible {
-      display: none;
-    }
-  }
+		.legend {
+			position: absolute;
+			top: 0;
+			left: 0;
+			// .black(0.5);
+			.white(1);
+		}
+		.invisible {
+			display: none;
+		}
+		.selected {
+			fill-color: black;
+			fill-opacity: 50%;
+		}
+		.highlight {
+			fill: @kmc2-orange;
+			fill-opacity: 50%;
+			stroke-width: 1px;
+			stroke: solid;
+
+			&:hover {
+			 	fill: @kmc2-pink;
+			}
+		}
+	}
 }

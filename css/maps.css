@@ -34,17 +34,7 @@
 .kmc2-maps-plugin .country {
   fill: white;
   fill-opacity: 0.5;
-  stroke: none;
-}
-.kmc2-maps-plugin .coast {
-  fill: none;
-  stroke: #000000;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
-}
-.kmc2-maps-plugin .boundary {
-  fill: none;
-  stroke: #000000;
+  stroke: #222222;
   stroke-width: 0.5px;
   stroke-opacity: 1;
 }
@@ -61,18 +51,19 @@
   left: 0;
   background-color: #ffffff;
 }
+.kmc2-maps-plugin .trips-visualization-map .legend .highlight a {
+  color: #f01d4f;
+}
 .kmc2-maps-plugin .trips-visualization-map .invisible {
   display: none;
 }
 .kmc2-maps-plugin .trips-visualization-map .selected {
-  fill-color: black;
+  fill: #f01d4f !important;
   fill-opacity: 50%;
 }
 .kmc2-maps-plugin .trips-visualization-map .highlight {
   fill: #ff7f2a;
   fill-opacity: 50%;
-  stroke-width: 1px;
-  stroke: solid;
 }
 .kmc2-maps-plugin .trips-visualization-map .highlight:hover {
   fill: #f01d4f;

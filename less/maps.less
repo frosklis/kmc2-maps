@@ -1,7 +1,7 @@
 @kmc2-pink:         #f01d4f;
 @kmc2-blue:         #2a7fff;
 @kmc2-orange:       #ff7f2a;
-@kmc2-country-line:	#000000;
+@kmc2-country-line:	#222222;
 .black(@op: 1) {
     background-color: rgba(0,0,0,@op);
 }
@@ -71,20 +71,22 @@
 	.country {
 		fill: white;
 		fill-opacity: 0.5;
-		stroke: none;
+		stroke: @kmc2-country-line;
+		stroke-width: 0.5px;
+		stroke-opacity: 1;
 	}  
-	.coast {
-		fill: none;
-		stroke: @kmc2-country-line;
-		stroke-width: 0.5px;
-		stroke-opacity: 1;
-	}
-	.boundary {
-		fill: none;
-		stroke: @kmc2-country-line;
-		stroke-width: 0.5px;
-		stroke-opacity: 1;
-	}
+	// .coast {
+	// 	fill: none;
+	// 	stroke: @kmc2-country-line;
+	// 	stroke-width: 0.5px;
+	// 	stroke-opacity: 1;
+	// }
+	// .boundary {
+	// 	fill: none;
+	// 	stroke: @kmc2-country-line;
+	// 	stroke-width: 0.5px;
+	// 	stroke-opacity: 1;
+	// }
 
 	svg {
 		// border: solid 1px black;
@@ -101,19 +103,23 @@
 			left: 0;
 			// .black(0.5);
 			.white(1);
+
+			.highlight {
+				a {
+					color: @kmc2-pink;
+				}
+			}
 		}
 		.invisible {
 			display: none;
 		}
 		.selected {
-			fill-color: black;
+			fill: @kmc2-pink !important;
 			fill-opacity: 50%;
 		}
 		.highlight {
 			fill: @kmc2-orange;
 			fill-opacity: 50%;
-			stroke-width: 1px;
-			stroke: solid;
 
 			&:hover {
 			 	fill: @kmc2-pink;

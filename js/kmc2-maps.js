@@ -6,6 +6,8 @@ function Kmc2_Maps (parameters) {
 	vis.mult = 1.0;
     // Delete the svg object if it exists and create it
     vis.selector = parameters.selector;
+    vis.countries = parameters.countries;
+
     vis.div = d3.select(vis.selector);
 
     d3.select(vis.selector + " svg").remove();
@@ -13,14 +15,15 @@ function Kmc2_Maps (parameters) {
 
     vis.width = parseFloat(vis.svg.style("width"));
 
-    vis.rotation = [-10,0,0];
+    vis.center = [10,0];
+    vis.rotation = [-vis.center[0],-vis.center[1],0];
 
 	vis.projection = 
 	  d3.geo.winkel3()
 	  // d3.geo.cylindricalStereographic()
 	    .scale(1)
-	    .center([0,0])
-	    .rotate(vis.rotation)
+	    // .center([0,0])
+	    // .rotate(vis.rotation)
 	    .precision(.1);
 
 	vis.g = vis.svg.append("g").attr("class", "world");
@@ -28,44 +31,113 @@ function Kmc2_Maps (parameters) {
 	var left_border = Infinity,
 	  lower_border = -Infinity,
 	  right_border = -Infinity,
-	  upper_border = Infinity;
+	  upper_border = Infinity,
+	  left_border_coords = Infinity,
+	  lower_border_coords = -Infinity,
+	  right_border_coords = -Infinity,
+	  upper_border_coords = Infinity;
+
+	// d3.json(basepath+'data/world-50m-topojson.json', function(world) {
+	// 	vis.world_highres = world;
+	// 	vis.worldfeatures_highress = topojson.feature(world, world.objects["world"]);
+	// });
 
 	d3.json(basepath+'data/world-110m-topojson.json', function(world) {
-		vis.world = world;
-		vis.worldfeatures = topojson.feature(world, world.objects["world-110m"]);
+		vis.worldfeatures = topojson.feature(world, world.objects["world"]);
 
+		if (typeof vis.countries === 'undefined' && typeof vis.taboo === 'undefined') {
+			// Añadir propiedades
+			for(j=0; j<vis.worldfeatures.features.length; j++) {
+				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
+					coords = vis.projection(coords);
+					var x = coords[0]*1.1,
+					y = coords[1]*1.1;
 
-		// Añadir propiedades
-		for(j=0; j<vis.worldfeatures.features.length; j++) {
-			d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-				coords = vis.projection(coords);
-				var x = coords[0]*1.1,
-				y = coords[1]*1.1;
+					if (x < left_border) left_border = x;
+					if (x > right_border) right_border = x;
+					if (y > lower_border) lower_border = y;
+					if (y < upper_border) upper_border = y;
 
-				if (x < left_border) left_border = x;
-				if (x > right_border) right_border = x;
-				if (y > lower_border) lower_border = y;
-				if (y < upper_border) upper_border = y;
+				});
 
-			});
+			}
+		}
+		else {
+			// Añadir propiedades
+			for(j=0; j<vis.worldfeatures.features.length; j++) {
+				if (typeof vis.countries != 'undefined' ) {
+					if (vis.countries.indexOf(vis.worldfeatures.features[j].id) == -1) continue;
+				}
+				if (typeof vis.taboo != 'undefined'){
+					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) continue;
+				}
+				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
+					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] == -180) {
+						coords[0] = 19.65;
+					}
 
+					x_coords = coords[0];
+					y_coords = coords[1];
+
+					coords = vis.projection(coords);
+					var x = coords[0]*1.1,
+					y = coords[1]*1.1;
+
+					if (x < left_border) left_border = x;
+					if (x > right_border) right_border = x;
+					if (y > lower_border) lower_border = y;
+					if (y < upper_border) upper_border = y;
+
+					if (x_coords < left_border_coords) left_border_coords = x_coords;
+					if (x_coords > right_border_coords) right_border_coords = x_coords;
+					if (y_coords > lower_border_coords) lower_border_coords = y_coords;
+					if (y_coords < upper_border_coords) upper_border_coords = y_coords;
+
+				});
+			}
+
+			var centroid = [(left_border_coords + right_border_coords) / 2, (lower_border_coords + upper_border_coords) / 2 ];
+			console.log(centroid);
+
+			vis.rotation = [-centroid[0],-centroid[1],0];
+
+			vis.center = centroid;
+
+			vis.projection
+				.center(vis.center)
+				.rotate(vis.rotation);
+		
 		}
 
+
 		// Cambiar escala en función de la anchura de la pantalla
-		vis.projection.scale(vis.width / (right_border-left_border));
+		var max_width = Math.abs(right_border-left_border);
+		var max_height = Math.abs(lower_border - upper_border);
+
+		if (max_height / max_width > 7 / 16) {
+			max_width = (16 / 7) *  max_height;
+		}
+
+		vis.projection.scale(0.92 * vis.width / max_width);
 		vis.scale = vis.projection.scale();
 
 		// Definir altura y centrar
-		vis.height = vis.width * (lower_border-upper_border) / (right_border-left_border);
+		vis.height = vis.width * max_height / max_width;
 
 		vis.svg
 			.attr("width", vis.width)
 			.attr("height", vis.height);
 
-		vis.projection.translate([
-			vis.width / 2, 
-			vis.height / 2
+		vis.projection.translate([0,0
 		]);
+
+		var pan = vis.projection(vis.center);
+
+		vis.projection.translate([
+			vis.width / 2 - pan[0], 
+			vis.height / 2 - pan[1]
+		]);
+
 		vis.aspectratio = vis.width / vis.height;
 
 		vis.path = d3.geo.path().projection(vis.projection);
@@ -75,13 +147,13 @@ function Kmc2_Maps (parameters) {
 		    .attr("class", "sphere")
 		    .attr("d", vis.path);
 
-		vis.g.append("use")
-		    .attr("class", "stroke")
-		    .attr("xlink:href", "#sphere");
+		// vis.g.append("use")
+		//     .attr("class", "stroke")
+		//     .attr("xlink:href", "#sphere");
 
-		vis.g.append("use")
-		    .attr("class", "fill")
-		    .attr("xlink:href", "#sphere");
+		// vis.g.append("use")
+		//     .attr("class", "fill")
+		//     .attr("xlink:href", "#sphere");
 
 
 		vis.graticule = d3.geo.graticule();
@@ -90,20 +162,20 @@ function Kmc2_Maps (parameters) {
 		    .datum(vis.graticule)
 		    .attr("class", "graticule")
 		    .attr("d", vis.path);
-		vis.g.append("g").selectAll("path")
+		vis.g.selectAll("path")
 		    .data(vis.graticule).enter().append("path")
 		    .attr("class", "graticule")
 		    .attr("d", vis.path);
 
 
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
-			.attr("class", "coast")
-			.attr("d", vis.path);
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
-			.attr("class", "boundary")
-			.attr("d", vis.path);
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
+		// 	.attr("class", "coast")
+		// 	.attr("d", vis.path);
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		// 	.attr("class", "boundary")
+		// 	.attr("d", vis.path);
 
 
 		vis.g.selectAll('path')
@@ -113,8 +185,12 @@ function Kmc2_Maps (parameters) {
 			.attr('class', 'country')
 			.attr('d', vis.path)
 			.on("click", vis.clicked);
-	
-
+		
+		vis.g.insert("circle")
+			.attr("cx", vis.projection(vis.center)[0])
+			.attr("cy", vis.projection(vis.center)[1])
+			.attr("cx", 50)
+			.classed("highlight", true);
 	});
 
 
@@ -140,8 +216,8 @@ function Kmc2_Maps (parameters) {
 			vis.centered = d;
 
 		} else {
-			var centroid = [0,0];
-			vis.rotation = [-10,0,0];
+			var centroid = vis.center;
+			vis.rotation = [-vis.center[0],-vis.center[1],0];
 
 			vis.projection
 				.center(d3.geo.centroid(d))
@@ -168,18 +244,16 @@ function Kmc2_Maps (parameters) {
 
 
 
-		vis.g.selectAll('.country')
-		.attr('d', vis.path);
 
-		vis.g.selectAll('.coast, .boundary, .sphere, .graticule').remove();
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
-			.attr("class", "coast")
-			.attr("d", vis.path);
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
-			.attr("class", "boundary")
-			.attr("d", vis.path);
+		vis.g.selectAll('.sphere, .graticule').remove();
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
+		// 	.attr("class", "coast")
+		// 	.attr("d", vis.path);
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		// 	.attr("class", "boundary")
+		// 	.attr("d", vis.path);
 		vis.g.append("path")
 		    .datum({type: "Sphere"})
 		    .attr("class", "sphere")
@@ -189,11 +263,32 @@ function Kmc2_Maps (parameters) {
 		    .attr("class", "graticule")
 		    .attr("d", vis.path);
 
-		// vis.g.selectAll('.boundary')
-		// .attr('d', vis.path);
+
+
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		// 	.attr("class", "boundary")
+		// 	.attr("d", vis.path);
+
 
 		// vis.g.selectAll('.coast')
 		// .attr('d', vis.path);
+
+		// vis.g.selectAll('.boundary')
+		// 	.transition()
+		// 	.duration(750)
+		// 	.attr('d', vis.path(vis.g.selectAll('.boundary').datum()));
+
+
+		vis.g.selectAll('.country')
+			.transition()
+			.duration(7500)
+			.attr('d', vis.path);
+
+		// vis.g.transition()
+		//   .duration(750)
+		//   .attr("transform", traslacion)
+		//   .style("stroke-width", 1.5 / k + "px");
 
 		return;
 

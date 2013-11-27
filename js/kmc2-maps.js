@@ -114,11 +114,11 @@ function Kmc2_Maps (parameters) {
 		var max_width = Math.abs(right_border-left_border);
 		var max_height = Math.abs(lower_border - upper_border);
 
-		if (max_height / max_width > 7 / 16) {
-			max_width = (16 / 7) *  max_height;
+		if (max_height / max_width > 9 / 16) {
+			max_width = (16 / 9) *  max_height;
 		}
 
-		vis.projection.scale(0.92 * vis.width / max_width);
+		vis.projection.scale(vis.width / max_width);
 		vis.scale = vis.projection.scale();
 
 		// Definir altura y centrar
@@ -169,11 +169,11 @@ function Kmc2_Maps (parameters) {
 
 
 		// vis.g.insert("path")
-		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
+		//   .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a == b; }))
 		// 	.attr("class", "coast")
 		// 	.attr("d", vis.path);
 		// vis.g.insert("path")
-		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world"], function(a, b) { return a != b; }))
 		// 	.attr("class", "boundary")
 		// 	.attr("d", vis.path);
 
@@ -282,7 +282,7 @@ function Kmc2_Maps (parameters) {
 
 		vis.g.selectAll('.country')
 			.transition()
-			.duration(7500)
+			// .duration(1500)
 			.attr('d', vis.path);
 
 		// vis.g.transition()

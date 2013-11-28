@@ -13,9 +13,6 @@ jQuery(document).ready(function() {
 
 		countries = json.countries;
 		trips = json.trips;
-		// console.log(d3.values(trips));
-
-
 
 		for (var key in countries) {
 			world.svg.selectAll('#' + key).classed("highlight", true);
@@ -49,6 +46,14 @@ jQuery(document).ready(function() {
 						.classed("selected", true);
 				}
 
+			})
+			.on("mouseout", function (d) {
+				// Unselect countries for the trip
+				for (var i=0; i<d.countries.length;i++) {
+					world.svg.selectAll("#" + d.countries[i])
+						.classed("selected", false);
+				}
+				
 			});
 
 		world.g.selectAll(".country")

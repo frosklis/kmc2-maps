@@ -38,33 +38,48 @@
   stroke-width: 0.5px;
   stroke-opacity: 1;
 }
+.kmc2-maps-plugin .coast {
+  fill: none;
+  stroke: #222222;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
+.kmc2-maps-plugin .boundary {
+  fill: none;
+  stroke: #222222;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
 .kmc2-maps-plugin svg {
   width: 100%;
   height: auto;
 }
-.kmc2-maps-plugin .trips-visualization-map {
+.kmc2-maps-plugin .maps-container {
   position: relative;
 }
-.kmc2-maps-plugin .trips-visualization-map .legend {
+.kmc2-maps-plugin .maps-container .legend {
   position: absolute;
   top: 0;
   left: 0;
   background-color: rgba(255, 255, 255, 0.8);
 }
-.kmc2-maps-plugin .trips-visualization-map .legend .highlight a {
+.kmc2-maps-plugin .maps-container .legend a {
+  color: black;
+}
+.kmc2-maps-plugin .maps-container .legend a:hover {
   color: #f01d4f;
 }
-.kmc2-maps-plugin .trips-visualization-map .invisible {
+.kmc2-maps-plugin .maps-container .invisible {
   display: none;
 }
-.kmc2-maps-plugin .trips-visualization-map .selected {
+.kmc2-maps-plugin .maps-container .selected {
   fill: #f01d4f !important;
   fill-opacity: 50%;
 }
-.kmc2-maps-plugin .trips-visualization-map .highlight {
+.kmc2-maps-plugin .maps-container .highlight {
   fill: #ff7f2a;
   fill-opacity: 50%;
 }
-.kmc2-maps-plugin .trips-visualization-map .highlight:hover {
+.kmc2-maps-plugin .maps-container .highlight:hover {
   fill: #f01d4f;
 }

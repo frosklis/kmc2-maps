@@ -55,8 +55,8 @@ class Kmc2_Visualization extends WP_Widget {
 		if ( !empty( $title ) ){
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		echo('<div class="kmc2-maps-plugin"><div class="trips-visualization-map">');
-		echo('</div></div>');
+		echo('<div class="kmc2-maps-plugin"><div class="maps-container"><div class="trips-visualization-map">');
+		echo('</div></div></div>');
 		echo $args['after_widget'];
 	}
 

@@ -4,6 +4,11 @@ ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php';
 jQuery(document).ready(function() {
 	var parameters = new Object();
 	parameters.selector = ".trips-visualization-map";
+	parameters.maxHeight = 500;
+	parameters.showAllCountries = false;
+	parameters.zoom = false;
+	parameters.useDefaultClick = false;
+	parameters.highlightAll = false;
 
 	var world = new Kmc2_Maps(parameters);
 
@@ -27,10 +32,17 @@ jQuery(document).ready(function() {
 			.data(d3.values(trips)).enter()
 		  .append("div")
 		  	.attr("id", function(d) {return "legend_" + d.slug;})
-		  .append("h3").append("a")
+		  	.style("cursor", "pointer")
+		  .append("p").append("a")
 		  	.text(function(d) {return d.category;})
-		  	.attr("href", function (d) { return kmc2_visualization_vars.siteurl + "category/" + d.slug; })
+			.on("click", function (d) {
+				d3.selectAll(".maps-container .trip").style("display", "none");
+				d3.selectAll(".trip-" + d.slug).style("display", "block");
+				world.svg.remove();
+
+			});
 			;
+
 
 		world.legend.selectAll("div")
 			.on("mouseover", function (d) {
@@ -75,20 +87,31 @@ jQuery(document).ready(function() {
 
 			});
 
-		// for (var key in trips) {
+		var trips_parameters = new Object();
+		var trips_visualizations = new Object();
 
-		// 	world.legend
-		// 	  .append("div")
-		// 		.attr("id", "legend_" + key)
-		// 		// .attr("class", "invisible")
-		// 	  .selectAll("h3")
-		// 		.data(trips[key])
-		// 	  .enter().append("h3").append("a")
-		// 	  	.text(function(d) {return d.category;})
-		// 	  	.attr("href", function (d) { return kmc2_visualization_vars.siteurl + "category/" + d.slug; })
-		// 	;
+		for (var key in trips) {
 
-		// }
+			d3.selectAll(".kmc2-maps-plugin .maps-container")
+				.append("div").classed("trip-" + key, true)
+				.classed("trip", true)
+				;
+
+			trips_parameters[key] = new Object();
+			trips_parameters[key].selector = ".trip-" + key;
+			trips_parameters[key].countries = trips[key].countries;
+			trips_parameters[key].maxHeight = 500;
+			trips_parameters[key].zoom = true;
+			trips_parameters[key].showAllCountries = false;
+			trips_parameters[key].useDefaultClick = false;
+
+			trips_visualizations[key] = new Kmc2_Maps(trips_parameters[key]);
+
+			d3.select(".trip-" + key, true)
+				.style("display", "none")
+				;
+
+		}
 
 	});
 

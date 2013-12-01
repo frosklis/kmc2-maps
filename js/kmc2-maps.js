@@ -8,6 +8,20 @@ function Kmc2_Maps (parameters) {
     vis.selector = parameters.selector;
     vis.countries = parameters.countries;
 
+    vis.aspectratio = parameters.aspectratio;    
+    vis.maxHeight = parameters.maxHeight;
+    vis.maxWidth = parameters.maxWidth;
+    vis.useDefaultClick = parameters.useDefaultClick;
+
+    vis.showAllCountries = true;
+    if (undefined != parameters.showAllCountries) {
+    	vis.showAllCountries = parameters.showAllCountries;
+    }
+    vis.zoom = false;
+    if (undefined != parameters.zoom) {
+    	vis.zoom = parameters.zoom;
+    }
+
     vis.div = d3.select(vis.selector);
 
     d3.select(vis.selector + " svg").remove();
@@ -20,7 +34,6 @@ function Kmc2_Maps (parameters) {
 
 	vis.projection = 
 	  d3.geo.winkel3()
-	  // d3.geo.cylindricalStereographic()
 	    .scale(1)
 	    // .center([0,0])
 	    // .rotate(vis.rotation)
@@ -41,11 +54,13 @@ function Kmc2_Maps (parameters) {
 	// 	vis.world_highres = world;
 	// 	vis.worldfeatures_highress = topojson.feature(world, world.objects["world"]);
 	// });
-
-	d3.json(basepath+'data/world-110m-topojson.json', function(world) {
+	
+	featuresPath = 'data/world-110m-topojson.json';
+	if (vis.zoom) featuresPath = 'data/world-50m-topojson.json';
+	d3.json(basepath+featuresPath, function(world) {
 		vis.worldfeatures = topojson.feature(world, world.objects["world"]);
 
-		if (typeof vis.countries === 'undefined' && typeof vis.taboo === 'undefined') {
+		if ((typeof vis.countries === 'undefined' && typeof vis.taboo === 'undefined') || vis.zoom == false) {
 			// Añadir propiedades
 			for(j=0; j<vis.worldfeatures.features.length; j++) {
 				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
@@ -72,10 +87,14 @@ function Kmc2_Maps (parameters) {
 					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) continue;
 				}
 				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] == -180) {
-						coords[0] = 19.65;
+					if (vis.worldfeatures.features[j].id == "RUS") {
+						console.log(coords[0], coords[1]);
 					}
-
+					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] <= -169) {
+						if (featuresPath.indexOf("110") > -1) coords[0] = 19.60396039603961;
+						else coords[0] = 360 + coords[0];
+						// coords[0] = 0;
+					}
 					x_coords = coords[0];
 					y_coords = coords[1];
 
@@ -97,7 +116,6 @@ function Kmc2_Maps (parameters) {
 			}
 
 			var centroid = [(left_border_coords + right_border_coords) / 2, (lower_border_coords + upper_border_coords) / 2 ];
-			console.log(centroid);
 
 			vis.rotation = [-centroid[0],-centroid[1],0];
 
@@ -114,15 +132,21 @@ function Kmc2_Maps (parameters) {
 		var max_width = Math.abs(right_border-left_border);
 		var max_height = Math.abs(lower_border - upper_border);
 
-		if (max_height / max_width > 9 / 16) {
-			max_width = (16 / 9) *  max_height;
+
+		if (undefined != vis.aspectratio && max_height / max_width > (1 / vis.aspectratio)) {
+			max_width = vis.aspectratio *  max_height;
 		}
-
-		vis.projection.scale(vis.width / max_width);
-		vis.scale = vis.projection.scale();
-
-		// Definir altura y centrar
+		// Definir altura
 		vis.height = vis.width * max_height / max_width;
+
+		if (undefined != vis.maxHeight) {
+			vis.height = Math.min(vis.maxHeight, vis.height);
+		}
+		if (undefined != vis.maxWidth) {
+			vis.width = Math.min(vis.maxWidth, vis.width);
+		}
+		vis.projection.scale(Math.min(vis.width / max_width, vis.height / max_height));
+		vis.scale = vis.projection.scale();
 
 		vis.svg
 			.attr("width", vis.width)
@@ -167,30 +191,35 @@ function Kmc2_Maps (parameters) {
 		    .attr("class", "graticule")
 		    .attr("d", vis.path);
 
+		vis.g.insert("path")
+		  .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a == b; }))
+			.attr("class", "coast")
+			.attr("d", vis.path);
 
-		// vis.g.insert("path")
-		//   .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a == b; }))
-		// 	.attr("class", "coast")
-		// 	.attr("d", vis.path);
-		// vis.g.insert("path")
-		//   .datum(topojson.mesh(vis.world, vis.world.objects["world"], function(a, b) { return a != b; }))
-		// 	.attr("class", "boundary")
-		// 	.attr("d", vis.path);
-
+		if (vis.showAllCountries) {
+			vis.g.insert("path")
+			  .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a != b; }))
+				.attr("class", "boundary")
+				.attr("d", vis.path);
+		}
 
 		vis.g.selectAll('path')
 			.data(vis.worldfeatures.features)
 		  .enter().append('path')
+		  	.filter(function(d) {
+		  		if (undefined == vis.countries) return true;
+		  		return vis.countries.indexOf(d.id) > -1;
+		  	})
 			.attr('id', function(d){return d.id;})
 			.attr('class', 'country')
 			.attr('d', vis.path)
-			.on("click", vis.clicked);
+			.classed("highlight", function(d) {return undefined != vis.countries;});
+
+		if (false != vis.useDefaultClick) {
+			vis.g.selectAll(".country").on("click", vis.clicked);
+		}
 		
-		vis.g.insert("circle")
-			.attr("cx", vis.projection(vis.center)[0])
-			.attr("cy", vis.projection(vis.center)[1])
-			.attr("cx", 50)
-			.classed("highlight", true);
+
 	});
 
 

@@ -75,18 +75,18 @@
 		stroke-width: 0.5px;
 		stroke-opacity: 1;
 	}  
-	// .coast {
-	// 	fill: none;
-	// 	stroke: @kmc2-country-line;
-	// 	stroke-width: 0.5px;
-	// 	stroke-opacity: 1;
-	// }
-	// .boundary {
-	// 	fill: none;
-	// 	stroke: @kmc2-country-line;
-	// 	stroke-width: 0.5px;
-	// 	stroke-opacity: 1;
-	// }
+	.coast {
+		fill: none;
+		stroke: @kmc2-country-line;
+		stroke-width: 0.5px;
+		stroke-opacity: 1;
+	}
+	.boundary {
+		fill: none;
+		stroke: @kmc2-country-line;
+		stroke-width: 0.5px;
+		stroke-opacity: 1;
+	}
 
 	svg {
 		// border: solid 1px black;
@@ -94,7 +94,7 @@
 		height: auto;
 	}
 
-	.trips-visualization-map {
+	.maps-container {
 		position: relative;
 
 		.legend {
@@ -103,11 +103,14 @@
 			left: 0;
 			// .black(0.5);
 			.white(.8);
-
-			.highlight {
-				a {
+			a {
+				color: black;					
+				&:hover {
 					color: @kmc2-pink;
 				}
+			}
+			.highlight {
+				// This class is applied automatically when a div inside legend is hovered
 			}
 		}
 		.invisible {

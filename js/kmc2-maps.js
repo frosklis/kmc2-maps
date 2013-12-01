@@ -87,13 +87,22 @@ function Kmc2_Maps (parameters) {
 					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) continue;
 				}
 				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-					if (vis.worldfeatures.features[j].id == "RUS") {
-						console.log(coords[0], coords[1]);
-					}
+					// if (vis.worldfeatures.features[j].id == "FRA") {
+					// 	console.log(coords[0], coords[1]);
+					// }
 					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] <= -169) {
 						if (featuresPath.indexOf("110") > -1) coords[0] = 19.60396039603961;
 						else coords[0] = 360 + coords[0];
-						// coords[0] = 0;
+					}
+					if (vis.worldfeatures.features[j].id == "FRA" ) {
+						if (coords[0] <= 0){
+							coords[0] = -5.13;
+							coords[1] = 41.37;
+						} 
+						else {
+							coords[0] = 9.558955895589577;
+							// coords[1] = 23.76;
+						}
 					}
 					x_coords = coords[0];
 					y_coords = coords[1];

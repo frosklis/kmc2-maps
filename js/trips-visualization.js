@@ -6,10 +6,8 @@ jQuery(document).ready(function() {
 	parameters.selector = ".trips-visualization-map";
 	parameters.maxHeight = 500;
 	parameters.showAllCountries = false;
-	// parameters.zoom = false;
-	parameters.zoom = true;
+	parameters.zoom = false;
 	parameters.useDefaultClick = false;
-	parameters.countries = ["FRA"];
 	parameters.highlightAll = false;
 
 	var world = new Kmc2_Maps(parameters);

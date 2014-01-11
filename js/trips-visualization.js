@@ -16,7 +16,6 @@ jQuery(document).ready(function() {
 
 	d3.json(ajaxUrl + "?action=kmc2_country_trips", function(error, json) {
 		if (error) return console.warn(error);
-		// console.log(json);
 
 		countries = json.countries;
 		trips = json.trips;
@@ -28,7 +27,6 @@ jQuery(document).ready(function() {
 		world.legend = 
 			world.div.append("div")
 				.attr("class", "legend")
-				// .attr("transform", "translate(50,50)")
 				;
 		world.legend.selectAll("div")
 			.data(d3.values(trips)).enter()

@@ -13,6 +13,8 @@ function Kmc2_Maps (parameters) {
     vis.maxWidth = parameters.maxWidth;
     vis.useDefaultClick = parameters.useDefaultClick;
 
+    vis.taboo = parameters.taboo;
+
     vis.showAllCountries = true;
     if (undefined != parameters.showAllCountries) {
     	vis.showAllCountries = parameters.showAllCountries;
@@ -21,7 +23,10 @@ function Kmc2_Maps (parameters) {
     if (undefined != parameters.zoom) {
     	vis.zoom = parameters.zoom;
     }
-
+	vis.showSphere = true;
+    if (undefined != parameters.showSphere) {
+    	vis.showSphere = parameters.showSphere;
+    }
     vis.div = d3.select(vis.selector);
 
     d3.select(vis.selector + " svg").remove();
@@ -34,6 +39,11 @@ function Kmc2_Maps (parameters) {
 
 	vis.projection = 
 	  d3.geo.winkel3()
+	  // d3.geo.orthographic()
+	  // d3.geo.stereographic()
+	  // d3.geo.airy()
+	  // d3.geo.azimuthalEquidistant()
+	  // d3.geo.mercator()
 	    .scale(1)
 	    // .center([0,0])
 	    // .rotate(vis.rotation)
@@ -50,46 +60,35 @@ function Kmc2_Maps (parameters) {
 	  right_border_coords = -Infinity,
 	  upper_border_coords = Infinity;
 
-	// d3.json(basepath+'data/world-50m-topojson.json', function(world) {
-	// 	vis.world_highres = world;
-	// 	vis.worldfeatures_highress = topojson.feature(world, world.objects["world"]);
-	// });
 	
-	featuresPath = 'data/world-110m-topojson.json';
-	if (vis.zoom) featuresPath = 'data/world-50m-topojson.json';
+	featuresPath = 'data/countries-110m-topojson.json';
+	if (vis.zoom) featuresPath = 'data/countries-50m-topojson.json';
 	d3.json(basepath+featuresPath, function(world) {
 		vis.worldfeatures = topojson.feature(world, world.objects["world"]);
 
-		if ((typeof vis.countries === 'undefined' && typeof vis.taboo === 'undefined') || vis.zoom == false) {
-			// Añadir propiedades
+
+		for(k=0; k<2; k++) {
+			left_border = Infinity;
+			lower_border = -Infinity;
+			right_border = -Infinity;
+			upper_border = Infinity;
+			left_border_coords = Infinity;
+			lower_border_coords = -Infinity;
+			right_border_coords = -Infinity;
+			upper_border_coords = Infinity;
+
 			for(j=0; j<vis.worldfeatures.features.length; j++) {
-				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-					coords = vis.projection(coords);
-					var x = coords[0]*1.1,
-					y = coords[1]*1.1;
-
-					if (x < left_border) left_border = x;
-					if (x > right_border) right_border = x;
-					if (y > lower_border) lower_border = y;
-					if (y < upper_border) upper_border = y;
-
-				});
-
-			}
-		}
-		else {
-			// Añadir propiedades
-			for(j=0; j<vis.worldfeatures.features.length; j++) {
+				if (typeof vis.taboo != 'undefined'){
+					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) {
+						vis.worldfeatures.features.splice(j, 1);
+						if (j == vis.worldfeatures.features.length) break;
+					}
+				}
 				if (typeof vis.countries != 'undefined' ) {
 					if (vis.countries.indexOf(vis.worldfeatures.features[j].id) == -1) continue;
 				}
-				if (typeof vis.taboo != 'undefined'){
-					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) continue;
-				}
+
 				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-					// if (vis.worldfeatures.features[j].id == "FRA") {
-					// 	console.log(coords[0], coords[1]);
-					// }
 					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] <= -169) {
 						if (featuresPath.indexOf("110") > -1) coords[0] = 19.60396039603961;
 						else coords[0] = 360 + coords[0];
@@ -104,6 +103,7 @@ function Kmc2_Maps (parameters) {
 							// coords[1] = 23.76;
 						}
 					}
+
 					x_coords = coords[0];
 					y_coords = coords[1];
 
@@ -122,18 +122,21 @@ function Kmc2_Maps (parameters) {
 					if (y_coords < upper_border_coords) upper_border_coords = y_coords;
 
 				});
+				
+
+			
+				var centroid = [(left_border_coords + right_border_coords) / 2, (lower_border_coords + upper_border_coords) / 2 ];
+
+				vis.rotation = vis.countries != undefined ? [-centroid[0],-centroid[1],0] : [-centroid[0],0,0];
+
+				vis.center = centroid;
+
+				vis.projection
+					.center(vis.center)
+					.rotate(vis.rotation);
+					// .rotate([vis.rotation[0], 0, 0]);
+			
 			}
-
-			var centroid = [(left_border_coords + right_border_coords) / 2, (lower_border_coords + upper_border_coords) / 2 ];
-
-			vis.rotation = [-centroid[0],-centroid[1],0];
-
-			vis.center = centroid;
-
-			vis.projection
-				.center(vis.center)
-				.rotate(vis.rotation);
-		
 		}
 
 
@@ -161,8 +164,7 @@ function Kmc2_Maps (parameters) {
 			.attr("width", vis.width)
 			.attr("height", vis.height);
 
-		vis.projection.translate([0,0
-		]);
+		vis.projection.translate([0,0]);
 
 		var pan = vis.projection(vis.center);
 
@@ -173,56 +175,42 @@ function Kmc2_Maps (parameters) {
 
 		vis.aspectratio = vis.width / vis.height;
 
+		vis.projection.clipExtent([[0, 0], [vis.width, vis.height]]);
+
+
 		vis.path = d3.geo.path().projection(vis.projection);
 
-		vis.g.append("path")
-		    .datum({type: "Sphere"})
-		    .attr("class", "sphere")
-		    .attr("d", vis.path);
-
-		// vis.g.append("use")
-		//     .attr("class", "stroke")
-		//     .attr("xlink:href", "#sphere");
-
-		// vis.g.append("use")
-		//     .attr("class", "fill")
-		//     .attr("xlink:href", "#sphere");
+		if (vis.showSphere) {
+			vis.g.append("path")
+			    .datum({type: "Sphere"})
+			    .attr("class", "sphere")
+			    .attr("d", vis.path);
 
 
-		vis.graticule = d3.geo.graticule();
+			vis.graticule = d3.geo.graticule();
 
-		vis.g.append("path")
-		    .datum(vis.graticule)
-		    .attr("class", "graticule")
-		    .attr("d", vis.path);
-		vis.g.selectAll("path")
-		    .data(vis.graticule).enter().append("path")
-		    .attr("class", "graticule")
-		    .attr("d", vis.path);
-
-		vis.g.insert("path")
-		  .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a == b; }))
-			.attr("class", "coast")
-			.attr("d", vis.path);
-
-		if (vis.showAllCountries) {
-			vis.g.insert("path")
-			  .datum(topojson.mesh(world, world.objects["world"], function(a, b) { return a != b; }))
-				.attr("class", "boundary")
-				.attr("d", vis.path);
+			vis.g.append("path")
+			    .datum(vis.graticule)
+			    .attr("class", "graticule")
+			    .attr("d", vis.path);
+			vis.g.selectAll("path")
+			    .data(vis.graticule).enter().append("path")
+			    .attr("class", "graticule")
+			    .attr("d", vis.path);
 		}
+
 
 		vis.g.selectAll('path')
 			.data(vis.worldfeatures.features)
 		  .enter().append('path')
-		  	.filter(function(d) {
-		  		if (undefined == vis.countries) return true;
-		  		return vis.countries.indexOf(d.id) > -1;
-		  	})
 			.attr('id', function(d){return d.id;})
 			.attr('class', 'country')
 			.attr('d', vis.path)
-			.classed("highlight", function(d) {return undefined != vis.countries;});
+			.classed("highlight", function(d) {
+				if (undefined == vis.countries) return false;
+				return vis.countries.indexOf(d.id) > -1
+			});
+
 
 		if (false != vis.useDefaultClick) {
 			vis.g.selectAll(".country").on("click", vis.clicked);

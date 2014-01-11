@@ -4,11 +4,13 @@ ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php';
 jQuery(document).ready(function() {
 	var parameters = new Object();
 	parameters.selector = ".trips-visualization-map";
-	parameters.maxHeight = 500;
-	parameters.showAllCountries = false;
+	parameters.maxHeight = 700;
+	parameters.showAllCountries = true;
 	parameters.zoom = false;
 	parameters.useDefaultClick = false;
 	parameters.highlightAll = false;
+	parameters.showSphere = false;
+	parameters.taboo = ["ATA"];
 
 	var world = new Kmc2_Maps(parameters);
 
@@ -100,7 +102,8 @@ jQuery(document).ready(function() {
 			trips_parameters[key] = new Object();
 			trips_parameters[key].selector = ".trip-" + key;
 			trips_parameters[key].countries = trips[key].countries;
-			trips_parameters[key].maxHeight = 500;
+			trips_parameters[key].countries = ["RUS"];
+			trips_parameters[key].maxHeight = 700;
 			trips_parameters[key].zoom = true;
 			trips_parameters[key].showAllCountries = false;
 			trips_parameters[key].useDefaultClick = false;

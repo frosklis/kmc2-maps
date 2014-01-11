@@ -156,10 +156,13 @@ function kmc2_country_trips() {
 		}
 	}
 
-	die(json_encode(array(
+
+	$return_value = json_encode(array(
 			"countries" => $countries,
 			"trips" => $trips
-		)));
+		));
+
+	die($return_value);
 
 }
 add_action( 'wp_ajax_kmc2_country_trips', 'kmc2_country_trips' );

@@ -102,7 +102,6 @@ jQuery(document).ready(function() {
 			trips_parameters[key] = new Object();
 			trips_parameters[key].selector = ".trip-" + key;
 			trips_parameters[key].countries = trips[key].countries;
-			trips_parameters[key].countries = ["RUS"];
 			trips_parameters[key].maxHeight = 700;
 			trips_parameters[key].zoom = true;
 			trips_parameters[key].showAllCountries = false;

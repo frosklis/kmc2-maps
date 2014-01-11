@@ -6,6 +6,27 @@ function Kmc2_Maps (parameters) {
 	vis.mult = 1.0;
     // Delete the svg object if it exists and create it
     vis.selector = parameters.selector;
+    vis.countries = parameters.countries;
+
+    vis.aspectratio = parameters.aspectratio;    
+    vis.maxHeight = parameters.maxHeight;
+    vis.maxWidth = parameters.maxWidth;
+    vis.useDefaultClick = parameters.useDefaultClick;
+
+    vis.taboo = parameters.taboo;
+
+    vis.showAllCountries = true;
+    if (undefined != parameters.showAllCountries) {
+    	vis.showAllCountries = parameters.showAllCountries;
+    }
+    vis.zoom = false;
+    if (undefined != parameters.zoom) {
+    	vis.zoom = parameters.zoom;
+    }
+	vis.showSphere = true;
+    if (undefined != parameters.showSphere) {
+    	vis.showSphere = parameters.showSphere;
+    }
     vis.div = d3.select(vis.selector);
 
     d3.select(vis.selector + " svg").remove();
@@ -13,14 +34,19 @@ function Kmc2_Maps (parameters) {
 
     vis.width = parseFloat(vis.svg.style("width"));
 
-    vis.rotation = [-10,0,0];
+    vis.center = [10,0];
+    vis.rotation = [-vis.center[0],-vis.center[1],0];
 
 	vis.projection = 
 	  d3.geo.winkel3()
-	  // d3.geo.cylindricalStereographic()
+	  // d3.geo.orthographic()
+	  // d3.geo.stereographic()
+	  // d3.geo.airy()
+	  // d3.geo.azimuthalEquidistant()
+	  // d3.geo.mercator()
 	    .scale(1)
-	    .center([0,0])
-	    .rotate(vis.rotation)
+	    // .center([0,0])
+	    // .rotate(vis.rotation)
 	    .precision(.1);
 
 	vis.g = vis.svg.append("g").attr("class", "world");
@@ -28,82 +54,150 @@ function Kmc2_Maps (parameters) {
 	var left_border = Infinity,
 	  lower_border = -Infinity,
 	  right_border = -Infinity,
-	  upper_border = Infinity;
+	  upper_border = Infinity,
+	  left_border_coords = Infinity,
+	  lower_border_coords = -Infinity,
+	  right_border_coords = -Infinity,
+	  upper_border_coords = Infinity;
 
-	d3.json(basepath+'data/world-110m-topojson.json', function(world) {
-		vis.world = world;
-		vis.worldfeatures = topojson.feature(world, world.objects["world-110m"]);
+	
+	featuresPath = 'data/countries-110m-topojson.json';
+	if (vis.zoom) featuresPath = 'data/countries-50m-topojson.json';
+	d3.json(basepath+featuresPath, function(world) {
+		vis.worldfeatures = topojson.feature(world, world.objects["world"]);
 
 
-		// Añadir propiedades
-		for(j=0; j<vis.worldfeatures.features.length; j++) {
-			d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
-				coords = vis.projection(coords);
-				var x = coords[0]*1.1,
-				y = coords[1]*1.1;
+		for(k=0; k<2; k++) {
+			left_border = Infinity;
+			lower_border = -Infinity;
+			right_border = -Infinity;
+			upper_border = Infinity;
+			left_border_coords = Infinity;
+			lower_border_coords = -Infinity;
+			right_border_coords = -Infinity;
+			upper_border_coords = Infinity;
 
-				if (x < left_border) left_border = x;
-				if (x > right_border) right_border = x;
-				if (y > lower_border) lower_border = y;
-				if (y < upper_border) upper_border = y;
+			for(j=0; j<vis.worldfeatures.features.length; j++) {
+				if (typeof vis.taboo != 'undefined'){
+					if (vis.taboo.indexOf(vis.worldfeatures.features[j].id) > -1) {
+						vis.worldfeatures.features.splice(j, 1);
+						if (j == vis.worldfeatures.features.length) break;
+					}
+				}
+				if (typeof vis.countries != 'undefined' ) {
+					if (vis.countries.indexOf(vis.worldfeatures.features[j].id) == -1) continue;
+				}
 
-			});
+				d3.geo.bounds(vis.worldfeatures.features[j]).forEach(function(coords) {
+					if (vis.worldfeatures.features[j].id == "RUS" && coords[0] <= -169) {
+						if (featuresPath.indexOf("110") > -1) coords[0] = 19.60396039603961;
+						else coords[0] = 360 + coords[0];
+					}
+					if (vis.worldfeatures.features[j].id == "FRA" ) {
+						if (coords[0] <= 0){
+							coords[0] = -5.13;
+							coords[1] = 41.37;
+						} 
+						else {
+							coords[0] = 9.558955895589577;
+							// coords[1] = 23.76;
+						}
+					}
 
+					x_coords = coords[0];
+					y_coords = coords[1];
+
+					coords = vis.projection(coords);
+					var x = coords[0]*1.1,
+					y = coords[1]*1.1;
+
+					if (x < left_border) left_border = x;
+					if (x > right_border) right_border = x;
+					if (y > lower_border) lower_border = y;
+					if (y < upper_border) upper_border = y;
+
+					if (x_coords < left_border_coords) left_border_coords = x_coords;
+					if (x_coords > right_border_coords) right_border_coords = x_coords;
+					if (y_coords > lower_border_coords) lower_border_coords = y_coords;
+					if (y_coords < upper_border_coords) upper_border_coords = y_coords;
+
+				});
+				
+
+			
+				var centroid = [(left_border_coords + right_border_coords) / 2, (lower_border_coords + upper_border_coords) / 2 ];
+
+				vis.rotation = vis.countries != undefined ? [-centroid[0],-centroid[1],0] : [-centroid[0],0,0];
+
+				vis.center = centroid;
+
+				vis.projection
+					.center(vis.center)
+					.rotate(vis.rotation);
+					// .rotate([vis.rotation[0], 0, 0]);
+			
+			}
 		}
 
-		// Cambiar escala en función de la anchura de la pantalla
-		vis.projection.scale(vis.width / (right_border-left_border));
-		vis.scale = vis.projection.scale();
 
-		// Definir altura y centrar
-		vis.height = vis.width * (lower_border-upper_border) / (right_border-left_border);
+		// Cambiar escala en función de la anchura de la pantalla
+		var max_width = Math.abs(right_border-left_border);
+		var max_height = Math.abs(lower_border - upper_border);
+
+
+		if (undefined != vis.aspectratio && max_height / max_width > (1 / vis.aspectratio)) {
+			max_width = vis.aspectratio *  max_height;
+		}
+		// Definir altura
+		vis.height = vis.width * max_height / max_width;
+
+		if (undefined != vis.maxHeight) {
+			vis.height = Math.min(vis.maxHeight, vis.height);
+		}
+		if (undefined != vis.maxWidth) {
+			vis.width = Math.min(vis.maxWidth, vis.width);
+		}
+		vis.projection.scale(Math.min(vis.width / max_width, vis.height / max_height));
+		vis.scale = vis.projection.scale();
 
 		vis.svg
 			.attr("width", vis.width)
 			.attr("height", vis.height);
 
+		vis.projection.translate([0,0]);
+
+		var pan = vis.projection(vis.center);
+
 		vis.projection.translate([
-			vis.width / 2, 
-			vis.height / 2
+			vis.width / 2 - pan[0], 
+			vis.height / 2 - pan[1]
 		]);
+
 		vis.aspectratio = vis.width / vis.height;
+
+		vis.projection.clipExtent([[0, 0], [vis.width, vis.height]]);
+
 
 		vis.path = d3.geo.path().projection(vis.projection);
 
-		vis.g.append("path")
-		    .datum({type: "Sphere"})
-		    .attr("class", "sphere")
-		    .attr("d", vis.path);
-
-		vis.g.append("use")
-		    .attr("class", "stroke")
-		    .attr("xlink:href", "#sphere");
-
-		vis.g.append("use")
-		    .attr("class", "fill")
-		    .attr("xlink:href", "#sphere");
+		if (vis.showSphere) {
+			vis.g.append("path")
+			    .datum({type: "Sphere"})
+			    .attr("class", "sphere")
+			    .attr("d", vis.path);
 
 
-		vis.graticule = d3.geo.graticule();
-		console.log(vis.graticule);
-		vis.g.append("path")
-		    .datum(vis.graticule)
-		    .attr("class", "graticule")
-		    .attr("d", vis.path);
-		vis.g.append("g").selectAll("path")
-		    .data(vis.graticule).enter().append("path")
-		    .attr("class", "graticule")
-		    .attr("d", vis.path);
+			vis.graticule = d3.geo.graticule();
 
-
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
-			.attr("class", "coast")
-			.attr("d", vis.path);
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
-			.attr("class", "boundary")
-			.attr("d", vis.path);
+			vis.g.append("path")
+			    .datum(vis.graticule)
+			    .attr("class", "graticule")
+			    .attr("d", vis.path);
+			vis.g.selectAll("path")
+			    .data(vis.graticule).enter().append("path")
+			    .attr("class", "graticule")
+			    .attr("d", vis.path);
+		}
 
 
 		vis.g.selectAll('path')
@@ -112,8 +206,16 @@ function Kmc2_Maps (parameters) {
 			.attr('id', function(d){return d.id;})
 			.attr('class', 'country')
 			.attr('d', vis.path)
-			.on("click", vis.clicked);
-	
+			.classed("highlight", function(d) {
+				if (undefined == vis.countries) return false;
+				return vis.countries.indexOf(d.id) > -1
+			});
+
+
+		if (false != vis.useDefaultClick) {
+			vis.g.selectAll(".country").on("click", vis.clicked);
+		}
+		
 
 	});
 
@@ -140,8 +242,8 @@ function Kmc2_Maps (parameters) {
 			vis.centered = d;
 
 		} else {
-			var centroid = [0,0];
-			vis.rotation = [-10,0,0];
+			var centroid = vis.center;
+			vis.rotation = [-vis.center[0],-vis.center[1],0];
 
 			vis.projection
 				.center(d3.geo.centroid(d))
@@ -168,18 +270,16 @@ function Kmc2_Maps (parameters) {
 
 
 
-		vis.g.selectAll('.country')
-		.attr('d', vis.path);
 
-		vis.g.selectAll('.coast, .boundary, .sphere, .graticule').remove();
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
-			.attr("class", "coast")
-			.attr("d", vis.path);
-		vis.g.insert("path")
-		  .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
-			.attr("class", "boundary")
-			.attr("d", vis.path);
+		vis.g.selectAll('.sphere, .graticule').remove();
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a == b; }))
+		// 	.attr("class", "coast")
+		// 	.attr("d", vis.path);
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		// 	.attr("class", "boundary")
+		// 	.attr("d", vis.path);
 		vis.g.append("path")
 		    .datum({type: "Sphere"})
 		    .attr("class", "sphere")
@@ -189,11 +289,32 @@ function Kmc2_Maps (parameters) {
 		    .attr("class", "graticule")
 		    .attr("d", vis.path);
 
-		// vis.g.selectAll('.boundary')
-		// .attr('d', vis.path);
+
+
+		// vis.g.insert("path")
+		//   .datum(topojson.mesh(vis.world, vis.world.objects["world-110m"], function(a, b) { return a != b; }))
+		// 	.attr("class", "boundary")
+		// 	.attr("d", vis.path);
+
 
 		// vis.g.selectAll('.coast')
 		// .attr('d', vis.path);
+
+		// vis.g.selectAll('.boundary')
+		// 	.transition()
+		// 	.duration(750)
+		// 	.attr('d', vis.path(vis.g.selectAll('.boundary').datum()));
+
+
+		vis.g.selectAll('.country')
+			.transition()
+			// .duration(1500)
+			.attr('d', vis.path);
+
+		// vis.g.transition()
+		//   .duration(750)
+		//   .attr("transform", traslacion)
+		//   .style("stroke-width", 1.5 / k + "px");
 
 		return;
 

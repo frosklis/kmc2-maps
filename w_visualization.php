@@ -18,6 +18,7 @@ class Kmc2_Visualization extends WP_Widget {
 		if ( is_active_widget(false, false, $this->id_base) ) {
 			$this->register_scripts_and_styles();
     	}
+
 	}
 
 	/**
@@ -29,6 +30,23 @@ class Kmc2_Visualization extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
+		// enqueue styles and scripts
+	    wp_enqueue_script('d3');
+	    wp_enqueue_script('queue');
+	    wp_enqueue_script('d3-geo-projection');
+	    wp_enqueue_script('topojson');
+
+	    wp_localize_script('trips-visualization', 'kmc2_visualization_vars', 
+	    	array(
+				'basepath' => plugins_url('kmc2-maps/',''),
+				'siteurl' => home_url( '/' )
+			)
+		);
+
+	    wp_enqueue_script('trips-visualization');
+	    wp_enqueue_script('kmc2-maps');
+	    wp_enqueue_style('kmc2-maps');
+
 		if (!empty($instance['title'])){
 			$title = apply_filters( 'widget_title', $instance['title'] );
 		}
@@ -37,8 +55,8 @@ class Kmc2_Visualization extends WP_Widget {
 		if ( !empty( $title ) ){
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		echo('<div class="kmc2-maps-plugin"><div class="trips-visualization-map">');
-		echo('</div></div>');
+		echo('<div class="kmc2-maps-plugin"><div class="maps-container"><div class="trips-visualization-map">');
+		echo('</div></div></div>');
 		echo $args['after_widget'];
 	}
 
@@ -95,23 +113,6 @@ class Kmc2_Visualization extends WP_Widget {
 		// register styles
 	    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
 
-
-	    // enqueue styles and scripts
-	    wp_enqueue_script('d3');
-	    wp_enqueue_script('queue');
-	    wp_enqueue_script('d3-geo-projection');
-	    wp_enqueue_script('topojson');
-
-	    wp_localize_script('trips-visualization', 'kmc2_visualization_vars', 
-	    	array(
-				'basepath' => plugins_url('kmc2-maps/',''),
-				'siteurl' => home_url( '/' )
-			)
-		);
-
-	    wp_enqueue_script('trips-visualization');
-	    wp_enqueue_script('kmc2-maps');
-	    wp_enqueue_style('kmc2-maps');
 	}
 
 } // class Kmc2_Visualization

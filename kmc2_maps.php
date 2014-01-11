@@ -137,8 +137,15 @@ function kmc2_country_trips() {
 	$myrows = $wpdb->get_results( $query );
 
 	$countries = array();
+	$trips = array();
 	foreach ($myrows as $row) {
 		$c = explode(',', $row->visited_countries);
+
+		$trips[$row->slug] = array(
+			"countries" => $c,
+			"category" => $row->name,
+			"slug" => $row->slug);
+	
 		for ($i = 0; $i < count($c); $i++) {
 			if(!isset($countries[$c[$i]])) {
 				$countries[$c[$i]] = array();
@@ -148,7 +155,14 @@ function kmc2_country_trips() {
 				"slug" => $row->slug));
 		}
 	}
-	die(json_encode($countries));
+
+
+	$return_value = json_encode(array(
+			"countries" => $countries,
+			"trips" => $trips
+		));
+
+	die($return_value);
 
 }
 add_action( 'wp_ajax_kmc2_country_trips', 'kmc2_country_trips' );

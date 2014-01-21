@@ -42,7 +42,7 @@ function visited_countries () {
           juntos: +d.juntos
         }); 
     }) 
-    .get(function(error, rows) { // console.log(rows); 
+    .get(function(error, rows) { // // console.log(rows); 
     });
 
 
@@ -123,7 +123,7 @@ function visited_countries () {
 
 // http://bl.ocks.org/mbostock/2206590
 vc.clicked = function (d) {
-  console.log(d);
+  // // console.log(d);
   var x, y, k;
   var width, height;
   width = vc.width * vc.mult;

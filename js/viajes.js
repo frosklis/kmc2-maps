@@ -151,8 +151,8 @@ function viajes_02 () {
 
 
 vv.hovered = function (d) {
-  console.log("pasando por");
-  console.log(d);
+  // console.log("pasando por");
+  // console.log(d);
 };
 vv.clicked = function (d) {
   var x, y, k;
@@ -195,14 +195,14 @@ vv.clicked = function (d) {
         .duration(750)
         .style("stroke-width", 1 / k + "px");
 
-  // console.log(traslacion);
+  // // console.log(traslacion);
 };
 
 
 function dibujarRecorridos(name, data) {
-  console.log("Dibujar recorridos");
-  console.log(name);
-  console.log(data);
+  // console.log("Dibujar recorridos");
+  // console.log(name);
+  // console.log(data);
 
   var g = vv.g.append("g")
     .attr("id", name)
@@ -216,7 +216,7 @@ function dibujarRecorridos(name, data) {
 
   for(i=0;i<data.length;i++) {
     route.coordinates.push([data[i].lon, data[i].lat]);
-  }  console.log(g);
+  }  // console.log(g);
   g.append("path")
     .datum(route)
     .attr("class", "route")

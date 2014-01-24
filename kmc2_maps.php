@@ -61,7 +61,7 @@ if(class_exists('KmC2_Maps')) {
 	register_deactivation_hook(__FILE__, array('KmC2_Maps', 'deactivate')); 
 
 	// instantiate the plugin class only if the plugin is active
-	if(!is_admin()) include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	if ( is_plugin_active( __FILE__ ) ) {
 		$maps_plugin = new KmC2_Maps(); 
 	} 

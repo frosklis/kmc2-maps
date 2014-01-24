@@ -2,7 +2,7 @@
 /*
 Plugin Name: Km C2 maps
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
-Description: The maps that appear on the kmc2 website
+Description: Provides widgets and functionality to show maps.
 Version: 0.1
 Author: Claudio Noguera
 Author URI: http://claudionoguera.tk/blog
@@ -12,6 +12,7 @@ License: A "Slug" license name e.g. GPL2
 <?php
 
 // Require every single widget file
+// They have a class for the Widget but don't instantiate it
 require('w_visited_countries.php');
 require('w_viajes.php');
 require('w_visualization.php');
@@ -26,12 +27,23 @@ function register_map_widgets() {
 }
 
 
-if (!class_exists("KmC2_Maps")) { 
-	class KmC2_Maps extends WP_Widget {
+
+if(!class_exists('KmC2_Maps')) { 
+	class KmC2_Maps { // don't need to extend WP_Widget
 
 		public function __construct() { 
-			// register actions 
+			// register actions  and filters
 			add_action( 'widgets_init', 'register_map_widgets' );
+			
+			// The admin stuff is only loaded if in the admin page
+			if (is_admin()) {
+				add_action( 'category_add_form_fields', 'kmc2_category_add_form_fields' ); 
+				add_action( 'category_edit_form_fields', 'kmc2_category_edit_form_fields' ); 
+				add_action( 'create_category', 'kmc2_custom_field_save', 10, 2 );    
+				add_action( 'edited_category', 'kmc2_custom_field_save', 10, 2 );
+				add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
+			}
+			
 		} // END public function __construct 
 		public static function activate() { 
 			// Do nothing 
@@ -40,20 +52,19 @@ if (!class_exists("KmC2_Maps")) {
 		public static function deactivate() { 
 			// Do nothing 
 		} // END public static function deactivate 
-
-		public function test_plugin () {
-			echo ("esta función está dentro del plugin");
-		}
-	}
-} //End Class KmC2_Maps
+	}//End Class KmC2_Maps
+}
 
 if(class_exists('KmC2_Maps')) { 
 	// Installation and uninstallation hooks 
 	register_activation_hook(__FILE__, array('KmC2_Maps', 'activate')); 
 	register_deactivation_hook(__FILE__, array('KmC2_Maps', 'deactivate')); 
 
-	// instantiate the plugin class 
-	$maps_plugin = new KmC2_Maps(); 
+	// instantiate the plugin class only if the plugin is active
+	if(!is_admin()) include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	if ( is_plugin_active( __FILE__ ) ) {
+		$maps_plugin = new KmC2_Maps(); 
+	} 
 }
 
 
@@ -156,11 +167,7 @@ function kmc2_category_edit_form_fields($cat) {
 <?php
 }
 
-add_action( 'category_add_form_fields', 'kmc2_category_add_form_fields' ); 
-add_action( 'category_edit_form_fields', 'kmc2_category_edit_form_fields' ); 
 
-add_action( 'create_category', 'kmc2_custom_field_save', 10, 2 );    
-add_action( 'edited_category', 'kmc2_custom_field_save', 10, 2 );
  
 function kmc2_custom_field_save( $term_id) {
 	update_term_meta($term_id, 'kmc2-visited-countries', $_POST['kmc2-visited-countries']);
@@ -201,20 +208,7 @@ function categoriesColumnsRow($argument, $columnName, $categoryID){
                 return get_term_meta($categoryID, 'kmc2-visited-countries', true);
         }
 }
-add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
 
-
-
-
-// AJAX
-
-function prueba_AJAX() {
-	$results = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
-	die(json_encode($results));
-}
-// creating Ajax call for WordPress
-add_action( 'wp_ajax_prueba_AJAX', 'prueba_AJAX' );
-add_action( 'wp_ajax_nopriv_prueba_AJAX', 'prueba_AJAX' );
 
 
 

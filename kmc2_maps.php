@@ -164,7 +164,7 @@ function kmc2_custom_field_save( $term_id) {
 
 	// Construct visited places JSON
 	$i = 0;
-	$kmc2_postdata = [];
+	$kmc2_postdata = array();
 	while(true) {
 		$index = "kmc2-visited-places-index-" . $i;
 		if (!isset($_POST[$index])) break;

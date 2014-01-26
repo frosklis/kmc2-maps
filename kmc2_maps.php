@@ -28,40 +28,40 @@ function register_map_widgets() {
 
 
 
-if(!class_exists('KmC2_Maps')) { 
+if(!class_exists('KmC2_Maps')) {
 	class KmC2_Maps { // don't need to extend WP_Widget
 
-		public function __construct() { 
+		public function __construct() {
 			// register actions  and filters
 			add_action( 'widgets_init', 'register_map_widgets' );
-			
+
 			// The admin stuff is only loaded if in the admin page
 			if (is_admin()) {
-				add_action( 'category_add_form_fields', 'kmc2_category_add_form_fields' ); 
-				add_action( 'category_edit_form_fields', 'kmc2_category_edit_form_fields' ); 
-				add_action( 'create_category', 'kmc2_custom_field_save', 10, 2 );    
+				add_action( 'category_add_form_fields', 'kmc2_category_add_form_fields' );
+				add_action( 'category_edit_form_fields', 'kmc2_category_edit_form_fields' );
+				add_action( 'create_category', 'kmc2_custom_field_save', 10, 2 );
 				add_action( 'edited_category', 'kmc2_custom_field_save', 10, 2 );
 				add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
 			}
-			
-		} // END public function __construct 
-		public static function activate() { 
-			// Do nothing 
-		} // END public static function activate 
 
-		public static function deactivate() { 
-			// Do nothing 
-		} // END public static function deactivate 
+		} // END public function __construct
+		public static function activate() {
+			// Do nothing
+		} // END public static function activate
+
+		public static function deactivate() {
+			// Do nothing
+		} // END public static function deactivate
 	}//End Class KmC2_Maps
 }
 
-if(class_exists('KmC2_Maps')) { 
-	// Installation and uninstallation hooks 
-	register_activation_hook(__FILE__, array('KmC2_Maps', 'activate')); 
-	register_deactivation_hook(__FILE__, array('KmC2_Maps', 'deactivate')); 
+if(class_exists('KmC2_Maps')) {
+	// Installation and uninstallation hooks
+	register_activation_hook(__FILE__, array('KmC2_Maps', 'activate'));
+	register_deactivation_hook(__FILE__, array('KmC2_Maps', 'deactivate'));
 
 	// instantiate the plugin
-	$maps_plugin = new KmC2_Maps(); 
+	$maps_plugin = new KmC2_Maps();
 }
 
 
@@ -95,9 +95,9 @@ function kmc2_category_add_form_fields() {
 // This goes in the edit category page
 //
 function kmc2_category_edit_form_fields($cat) {
-		wp_register_script( 'kmc2-maps-edit-form', plugins_url( 'kmc2-maps/js/kmc2-maps-edit-form.js' , ''), array('jquery-ui-sortable'), '', true );	    
+		wp_register_script( 'kmc2-maps-edit-form', plugins_url( 'kmc2-maps/js/kmc2-maps-edit-form.min.js' , ''), array('jquery-ui-sortable'), '', true );
 
-		wp_localize_script('kmc2-maps-edit-form', 'kmc2_vars', 
+		wp_localize_script('kmc2-maps-edit-form', 'kmc2_vars',
 	    	array(
 				'basepath' => plugins_url('kmc2-maps/',''),
 				'siteurl' => home_url( '/' )
@@ -119,24 +119,13 @@ function kmc2_category_edit_form_fields($cat) {
 					<th>Place name</th>
 					<th>Longitude</th>
 					<th>Latitude</th>
+					<th><input name="kmc2-visited-places-get-all" type="button" value="Get all coordinates"></th>
 					<th><input name="kmc2-visited-places-add" type="button" value="Add place"></th>
 				</tr>
 				<?php
 					$visited_places = json_decode(get_term_meta($cat->term_id, 'kmc2-visited-places', true), true);
 
 					for($i=0; $i < count($visited_places); $i++) {
-						// This will have to change
-						// echo("<tr>");
-						// echo("<td>");
-						// echo($visited_places[$i]["name"]);
-						// echo("</td");
-						// echo("<td>");
-						// echo($visited_places[$i]["lon"]);
-						// echo("</td");
-						// echo("<td>");
-						// echo($visited_places[$i]["lat"]);
-						// echo("</td");
-						// echo("</tr>");
 						?>
 
 						<tr>
@@ -144,10 +133,12 @@ function kmc2_category_edit_form_fields($cat) {
 							<input name="kmc2-visited-places-name-<?php echo($i);?>" type="text" value="<?php echo(utf8_decode($visited_places[$i]["name"])); ?>" size="40"></td>
 							<td><input name="kmc2-visited-places-lon-<?php echo($i);?>" type="text" value="<?php echo($visited_places[$i]["lon"]); ?>" size="40"></td>
 							<td><input name="kmc2-visited-places-lat-<?php echo($i);?>" type="text" value="<?php echo($visited_places[$i]["lat"]); ?>" size="40"></td>
+							<td><input name="kmc2-visited-places-get" type="button" value="Get coordinates"></td>
+							<td><input name="kmc2-visited-places-del" type="button" value="Delete place"></td>
 						</tr>
 						<?php
 					}
-				
+
 				if($i == 0) {
 				?>
 					<tr>
@@ -155,6 +146,8 @@ function kmc2_category_edit_form_fields($cat) {
 						<input name="kmc2-visited-places-name-<?php echo($i);?>" type="text" value="" size="40"></td>
 						<td><input name="kmc2-visited-places-lon-<?php echo($i);?>" type="text" value="" size="40"></td>
 						<td><input name="kmc2-visited-places-lat-<?php echo($i);?>" type="text" value="" size="40"></td>
+						<td><input name="kmc2-visited-places-get" type="button" value="Get coordinates"></td>
+						<td><input name="kmc2-visited-places-del" type="button" value="Delete place"></td>
 					</tr>
 					<?php
 				} ?>
@@ -165,7 +158,7 @@ function kmc2_category_edit_form_fields($cat) {
 }
 
 
- 
+
 function kmc2_custom_field_save( $term_id) {
 	update_term_meta($term_id, 'kmc2-visited-countries', $_POST['kmc2-visited-countries']);
 
@@ -181,7 +174,7 @@ function kmc2_custom_field_save( $term_id) {
 		$name = $_POST["kmc2-visited-places-name-" . $i];
 		$lon = $_POST["kmc2-visited-places-lon-" . $i];
 		$lat = $_POST["kmc2-visited-places-lat-" . $i];
-		
+
 		$kmc2_postdata[$index] = Array();
 		$kmc2_postdata[$index]["name"] = utf8_decode($name);
 		$kmc2_postdata[$index]["lon"] = $lon;
@@ -231,7 +224,7 @@ function kmc2_country_trips() {
 			"countries" => $c,
 			"category" => $row->name,
 			"slug" => $row->slug);
-	
+
 		for ($i = 0; $i < count($c); $i++) {
 			if(!isset($countries[$c[$i]])) {
 				$countries[$c[$i]] = array();

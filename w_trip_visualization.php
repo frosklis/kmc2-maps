@@ -32,7 +32,6 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 	public function widget( $args, $instance ) {
 		// enqueue styles and scripts
 	    wp_enqueue_script('d3');
-	    wp_enqueue_script('queue');
 	    wp_enqueue_script('d3-geo-projection');
 	    wp_enqueue_script('topojson');
 
@@ -45,7 +44,6 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 		);
 
 	    wp_enqueue_script('kmc2-trip-visualization');
-	    wp_enqueue_script('kmc2-maps');
 	    wp_enqueue_style('kmc2-maps');
 
 		if (!empty($instance['title'])){
@@ -104,10 +102,10 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 		//adding scripts file in the footer
 	    // con plugins_url( 'js/d3.v3.min.js' , __FILE__ )
 	    wp_register_script( 'd3', plugins_url( 'kmc2-maps/lib/d3.v3.min.js' , ''), '', '', true );
-	    wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', true );
+	    // wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', true );
 	    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', true );
 	    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', true );
-		wp_register_script( 'kmc2-trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.min.js' , ''), array( 'jquery','d3', 'queue', 'd3-geo-projection', 'topojson' ), '', true );
+		wp_register_script( 'kmc2-trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.min.js' , ''), array( 'jquery','d3', 'd3-geo-projection', 'topojson' ), '', true );
 
 
 		// register styles

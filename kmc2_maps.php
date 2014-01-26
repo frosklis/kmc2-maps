@@ -174,7 +174,7 @@ function kmc2_custom_field_save( $term_id) {
 	$kmc2_postdata = [];
 	while(true) {
 		$index = "kmc2-visited-places-index-" . $i;
-		if (null == $_POST[$index]) break;
+		if (!isset($_POST[$index])) break;
 
 		$index = intval($_POST[$index]);
 
@@ -183,14 +183,13 @@ function kmc2_custom_field_save( $term_id) {
 		$lat = $_POST["kmc2-visited-places-lat-" . $i];
 		
 		$kmc2_postdata[$index] = Array();
-		$kmc2_postdata[$index]["name"] = $name;
+		$kmc2_postdata[$index]["name"] = utf8_decode($name);
 		$kmc2_postdata[$index]["lon"] = $lon;
 		$kmc2_postdata[$index]["lat"] = $lat;
 
 		$i++;
 	}
 	ksort($kmc2_postdata);
-	// var_dump(json_encode($kmc2_postdata));
 	update_term_meta($term_id, 'kmc2-visited-places', json_encode($kmc2_postdata));
 }
 // - See more at: http://designorbital.com/snippets/add-custom-field-to-category/#sthash.bdjaPKl9.dpuf

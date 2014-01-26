@@ -1,3 +1,6 @@
+.kmc2-maps-plugin .trip-map {
+  height: 400px;
+}
 .kmc2-maps-plugin .graticule,
 .kmc2-maps-plugin .sphere {
   fill: none;

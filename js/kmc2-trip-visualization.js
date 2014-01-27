@@ -5,9 +5,44 @@ var basepath = kmc2_visualization_vars.basepath,
     vv = {};
 
 
+
+function calculateProjection(route) {
+    'use strict';
+    var bounds, center, scaleX, scaleY, path, projection, dist, prevScale, iters;
+
+    // Calculate the route center
+    projection = d3.geo.conicConformal()
+        .scale(1);
+
+    dist = Infinity;
+    prevScale = 1;
+    iters = 0;
+    while (dist > 1 && iters < 10) {
+        path = d3.geo.path()
+            .projection(projection);
+
+        bounds = path.bounds(route);
+        center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2];
+        center = projection.invert(center);
+
+        scaleX = projection.scale() * vv.width / (bounds[1][0] - bounds[0][0]);
+        scaleY = projection.scale() * vv.height / (bounds[1][1] - bounds[0][1]);
+
+        projection.scale(Math.min(scaleY, scaleX) * 0.75)
+            .rotate([-center[0], -center[1], 0]);
+        projection.translate([vv.width / 2, vv.height / 2]);
+
+        dist = Math.abs(projection.scale() - prevScale);
+        prevScale = projection.scale();
+        iters++;
+    }
+    return projection;
+
+}
+
 function drawRoute(d) {
     'use strict';
-    var j, g, route, bounds, center, scaleX, scaleY, path;
+    var j, g, route, path;
 
     d = JSON.parse(d);
 
@@ -29,25 +64,7 @@ function drawRoute(d) {
     vv.height = jQuery(".trip-map svg").height();
     vv.g = vv.svg.append("g");
 
-
-    // Calculate the route center
-    vv.projection = d3.geo.conicConformal()
-        .scale(1);
-    path = d3.geo.path()
-        .projection(vv.projection);
-
-    // bounds = d3.geo.bounds(route);
-    bounds = path.bounds(route);
-    center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2];
-    center = vv.projection.invert(center);
-
-
-    scaleX = vv.width / (bounds[1][0] - bounds[0][0]);
-    scaleY = vv.height / (bounds[1][1] - bounds[0][1]);
-
-    vv.projection.scale(Math.min(scaleY, scaleX) * 0.75)
-        .rotate([-center[0], -center[1], 0]);
-    vv.projection.translate([vv.width / 2, vv.height / 2]);
+    vv.projection = calculateProjection(route);
 
     path = d3.geo.path()
         .projection(vv.projection);
@@ -76,9 +93,6 @@ function drawRoute(d) {
             .attr("height", vv.height);
         vv.aspectratio = vv.width / vv.height;
 
-        path = d3.geo.path()
-            .projection(vv.projection);
-
         vv.g.append("path")
             .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a !== b; }))
             .attr("d", path)
@@ -87,8 +101,6 @@ function drawRoute(d) {
             .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a === b; }))
             .attr("d", path)
             .attr("class", "coast");
-
-
     });
 
     g.append("path")

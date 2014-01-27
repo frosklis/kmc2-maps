@@ -105,7 +105,7 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 	    // wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', true );
 	    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', true );
 	    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', true );
-		wp_register_script( 'kmc2-trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.min.js' , ''), array( 'jquery','d3', 'd3-geo-projection', 'topojson' ), '', true );
+		wp_register_script( 'kmc2-trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.js' , ''), array( 'jquery','d3', 'd3-geo-projection', 'topojson' ), '', true );
 
 
 		// register styles

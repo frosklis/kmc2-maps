@@ -1,12 +1,13 @@
-/*global kmc2_visualization_vars, jQuery: false, queue: false, d3: false, topojson:false*/
+/*global kmc2_visualization_vars, jQuery: false, d3: false, topojson:false*/
 var basepath = kmc2_visualization_vars.basepath,
     ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php',
     category_id = kmc2_visualization_vars.category_id,
     vv = {};
 
+
 function drawRoute(d) {
     'use strict';
-    var j, g, route, bounds, center, scaleX, scaleY;
+    var j, g, route, bounds, center, scaleX, scaleY, path;
 
     d = JSON.parse(d);
 
@@ -20,12 +21,6 @@ function drawRoute(d) {
         route.coordinates.push([parseFloat(d[j].lon), parseFloat(d[j].lat)]);
     }
 
-    bounds = d3.geo.bounds(route);
-    center = [[(bounds[0][0] + bounds[1][0]) / 2], (bounds[0][1] + bounds[1][1]) / 2];
-
-    vv.visited = [];
-
-    vv.data = [];
 
     d3.select(".trip-map svg").remove();
     vv.svg = d3.select(".trip-map").append("svg");
@@ -34,18 +29,27 @@ function drawRoute(d) {
     vv.height = jQuery(".trip-map svg").height();
     vv.g = vv.svg.append("g");
 
-    vv.projection = d3.geo.mollweide()
-        .scale(1)
+
+    // Calculate the route center
+    vv.projection = d3.geo.conicConformal()
+        .scale(1);
+    path = d3.geo.path()
+        .projection(vv.projection);
+
+    // bounds = d3.geo.bounds(route);
+    bounds = path.bounds(route);
+    center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2];
+    center = vv.projection.invert(center);
+
+
+    scaleX = vv.width / (bounds[1][0] - bounds[0][0]);
+    scaleY = vv.height / (bounds[1][1] - bounds[0][1]);
+
+    vv.projection.scale(Math.min(scaleY, scaleX) * 0.75)
         .rotate([-center[0], -center[1], 0]);
-
-
-    scaleX = vv.width / (vv.projection(bounds[1])[0] - vv.projection(bounds[0])[0]);
-    scaleY = vv.height / (vv.projection(bounds[0])[1] - vv.projection(bounds[1])[1]);
-
-    vv.projection.scale(Math.min(scaleY, scaleX) * 0.75);
     vv.projection.translate([vv.width / 2, vv.height / 2]);
 
-    vv.path = d3.geo.path()
+    path = d3.geo.path()
         .projection(vv.projection);
 
     g = vv.g.append("g")
@@ -54,7 +58,7 @@ function drawRoute(d) {
     g.append("path")
         .datum(route)
         .attr("class", "route")
-        .attr("d", vv.path);
+        .attr("d", path);
     g.selectAll("circle")
         .data(route.coordinates).enter().append("circle")
         .attr("cx", function (d) {
@@ -65,27 +69,32 @@ function drawRoute(d) {
         })
         .attr("r", "5px");
 
-    d3.json(basepath + 'data/countries-10m-topojson.json', function (world) {
+    d3.json(basepath + 'data/countries-110m-topojson.json', function (world) {
 
         vv.svg
             .attr("width", vv.width)
             .attr("height", vv.height);
         vv.aspectratio = vv.width / vv.height;
 
-        vv.path = d3.geo.path()
+        path = d3.geo.path()
             .projection(vv.projection);
 
         vv.g.append("path")
             .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a !== b; }))
-            .attr("d", vv.path)
+            .attr("d", path)
             .attr("class", "boundary");
         vv.g.append("path")
             .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a === b; }))
-            .attr("d", vv.path)
+            .attr("d", path)
             .attr("class", "coast");
 
 
     });
+
+    g.append("path")
+        .datum(d3.geo.graticule())
+        .attr("class", "graticule")
+        .attr("d", path);
 
 }
 

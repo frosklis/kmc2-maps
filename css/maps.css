@@ -32,7 +32,7 @@
 .kmc2-maps-plugin .route {
   fill: none;
   stroke: red;
-  stroke-width: 1px;
+  stroke-width: 2px;
 }
 .kmc2-maps-plugin .country {
   fill: white;

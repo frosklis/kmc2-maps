@@ -42,7 +42,9 @@ function calculateProjection(route) {
 
 function drawRoute(d) {
     'use strict';
-    var j, g, route, path;
+    var j, g, b, route, path, color, neighbors, countries;
+
+    color = d3.scale.category10();
 
     d = JSON.parse(d);
 
@@ -72,6 +74,8 @@ function drawRoute(d) {
     g = vv.g.append("g")
         .attr("class", "viaje");
 
+    b = g.append("g");
+
     g.append("path")
         .datum(route)
         .attr("class", "route")
@@ -86,22 +90,34 @@ function drawRoute(d) {
         })
         .attr("r", "5px");
 
-    d3.json(basepath + 'data/countries-110m-topojson.json', function (world) {
+    d3.json(basepath + 'data/countries-50m-topojson.json', function (world) {
+        neighbors = topojson.neighbors(world.objects.world.geometries);
+        countries = topojson.feature(world, world.objects.world).features;
 
         vv.svg
             .attr("width", vv.width)
             .attr("height", vv.height);
         vv.aspectratio = vv.width / vv.height;
 
-        vv.g.append("path")
-            .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a !== b; }))
-            .attr("d", path)
-            .attr("class", "boundary");
-        vv.g.append("path")
+        b.append("path")
             .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a === b; }))
             .attr("d", path)
             .attr("class", "coast");
-    });
+        b.append("path")
+            .datum(topojson.mesh(world, world.objects.world, function (a, b) { return a !== b; }))
+            .attr("d", path)
+            .attr("class", "boundary");
+
+
+        b.selectAll(".country")
+            .data(countries)
+            .enter().insert("path", ".graticule")
+            .attr("class", "country")
+            .attr("d", path)
+            .style("fill", function(d, i) {
+                return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0);
+            });
+        });
 
     g.append("path")
         .datum(d3.geo.graticule())

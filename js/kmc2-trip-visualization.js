@@ -43,20 +43,20 @@ function calculateProjection(route) {
 
 function drawRoute(d) {
     'use strict';
-    var j, g, b, route, path, color, neighbors, countries;
+    var j, g, b, path, color, neighbors, countries;
 
     color = d3.scale.category10();
 
     d = JSON.parse(d);
 
 
-    route = {
+    vv.route = {
         type: "LineString",
         coordinates: []
     };
 
     for (j = 0; j < d.length; j++) {
-        route.coordinates.push([parseFloat(d[j].lon), parseFloat(d[j].lat)]);
+        vv.route.coordinates.push([parseFloat(d[j].lon), parseFloat(d[j].lat)]);
     }
 
 
@@ -68,7 +68,7 @@ function drawRoute(d) {
 
     vv.g = vv.svg.append("g");
 
-    vv.projection = calculateProjection(route);
+    vv.projection = calculateProjection(vv.route);
 
     path = d3.geo.path()
         .projection(vv.projection);
@@ -79,11 +79,11 @@ function drawRoute(d) {
     b = g.append("g");
 
     g.append("path")
-        .datum(route)
+        .datum(vv.route)
         .attr("class", "route")
         .attr("d", path);
     g.selectAll("circle")
-        .data(route.coordinates).enter().append("circle")
+        .data(vv.route.coordinates).enter().append("circle")
         .attr("cx", function (d) {
             return vv.projection(d)[0];
         })
@@ -148,11 +148,23 @@ jQuery(document).ready(function () {
 jQuery(window).resize(function () {
     'use strict';
     vv.mult = jQuery(".trip-map svg").width() / vv.width;
+
     vv.svg
-        .attr("width", vv.width * vv.mult)
-        .attr("height", vv.height * vv.mult);
-    vv.g.transition()
-        .duration(750)
-        .attr("transform", "scale(" + vv.mult + ")");
+        .attr("width", vv.width * vv.mult);
+    vv.width *= vv.mult;
+    vv.projection = calculateProjection(vv.route);
+
+    d3.selectAll(".trip-map path").attr("d", d3.geo.path()
+        .projection(vv.projection));
+    d3.selectAll(".trip-map circle")
+        .attr("cx", function (d) {
+            return vv.projection(d)[0];
+        })
+        .attr("cy", function (d) {
+            return vv.projection(d)[1];
+        });
+    // vv.g.transition()
+    //     .duration(750)
+    //     .attr("transform", "scale(" + vv.mult + ")");
 });
 

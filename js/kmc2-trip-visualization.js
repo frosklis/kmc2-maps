@@ -1,4 +1,5 @@
 /*global kmc2_visualization_vars, jQuery: false, d3: false, topojson:false*/
+/*jslint bitwise: true*/
 var basepath = kmc2_visualization_vars.basepath,
     ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php',
     category_id = kmc2_visualization_vars.category_id,
@@ -62,8 +63,9 @@ function drawRoute(d) {
     d3.select(".trip-map svg").remove();
     vv.svg = d3.select(".trip-map").append("svg");
 
-    vv.width = jQuery(".trip-map svg").width();
-    vv.height = jQuery(".trip-map svg").height();
+    vv.width = jQuery(".trip-map").width();
+    vv.height = jQuery(".trip-map").height();
+
     vv.g = vv.svg.append("g");
 
     vv.projection = calculateProjection(route);
@@ -114,10 +116,13 @@ function drawRoute(d) {
             .enter().insert("path", ".graticule")
             .attr("class", "country")
             .attr("d", path)
-            .style("fill", function(d, i) {
-                return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0);
+            .style("fill", function (d, i) {
+                d.color = d3.max(neighbors[i], function (n) {
+                    return countries[n].color;
+                }) + 1 | 0;
+                return color(d.color);
             });
-        });
+    });
 
     g.append("path")
         .datum(d3.geo.graticule())

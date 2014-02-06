@@ -43,20 +43,34 @@ function calculateProjection(route) {
 
 function drawRoute(d) {
     'use strict';
-    var j, g, b, path, color, neighbors, countries;
+    var j, g, b, path, color, neighbors, countries, counter;
 
     color = d3.scale.category10();
 
     d = JSON.parse(d);
 
+    // Some checkings on d
+    if (d.length === 0) {
+        d3.select(".trip-map").remove();
+        return null;
+    }
 
     vv.route = {
         type: "LineString",
         coordinates: []
     };
 
+    counter = 0;
     for (j = 0; j < d.length; j++) {
+        if (d[j].lon !== "" && d[j].lat !== "") {
+            counter++;
+        }
         vv.route.coordinates.push([parseFloat(d[j].lon), parseFloat(d[j].lat)]);
+    }
+
+    if (counter === 0) {
+        d3.select(".trip-map").remove();
+        return null;
     }
 
 

@@ -11,7 +11,4 @@ jQuery(document).ready(function () {
     map.addLayer(layer);
 
 	map.setView(L.latLng(30, 0), 2);
-
-
-	map.locate({setView: false, maxZoom: 16});
 });

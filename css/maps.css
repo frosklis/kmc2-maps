@@ -94,3 +94,9 @@
 #trips-visualization-map img {
   max-height: none;
 }
+#post_position {
+  height: 300px;
+}
+#post_position img {
+  max-height: none;
+}

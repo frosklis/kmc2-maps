@@ -33,7 +33,8 @@ if(!class_exists('KmC2_Maps')) {
 
 		public function __construct() {
 			// register actions  and filters
-			add_action( 'widgets_init', 'register_map_widgets' );
+			add_action ('widgets_init','register_map_widgets' );
+			add_filter ('the_content', 'kmc2_maps_content_filter');
 
 			// The admin stuff is only loaded if in the admin page
 			if (is_admin()) {
@@ -43,6 +44,7 @@ if(!class_exists('KmC2_Maps')) {
 				add_action( 'edited_category', 'kmc2_custom_field_save', 10, 2 );
 				add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
 			}
+
 
 		} // END public function __construct
 		public static function activate() {
@@ -54,6 +56,23 @@ if(!class_exists('KmC2_Maps')) {
 		} // END public static function deactivate
 	}//End Class KmC2_Maps
 }
+function kmc2_load_post_maps( $query ) {
+	if ($query->is_single()) {
+		wp_register_script( 'leaflet-tiles', 'http://maps.stamen.com/js/tile.stamen.js?v1.2.4', '', '', true );
+		wp_register_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js', '', '', true );
+		wp_register_script( 'kmc2-post-map', plugins_url( 'kmc2-maps/js/kmc2-post-map.min.js' , ''), array( 'leaflet', 'leaflet-tiles' ), '', true );
+
+		// register styles
+		wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
+		wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
+
+		wp_enqueue_script('kmc2-post-map');
+
+		wp_enqueue_style('kmc2-maps');
+		wp_enqueue_style('leaflet');
+	}
+}
+add_action( 'pre_get_posts', 'kmc2_load_post_maps' );
 
 if(class_exists('KmC2_Maps')) {
 	// Installation and uninstallation hooks
@@ -64,6 +83,27 @@ if(class_exists('KmC2_Maps')) {
 	$maps_plugin = new KmC2_Maps();
 }
 
+
+function kmc2_maps_content_filter($content) {
+	if (!is_singular()) {
+		return $content;
+	}
+
+	$meta = get_post_meta( get_the_ID() );
+	if (!(isset($meta['geo_latitude']) && isset($meta['geo_longitude']))) {
+		return $content;
+	}
+
+	$map = "<div id='post_position'></div>";
+	$map .= "<script type='text/javascript'>";
+	$map .= "window.post_latitude = " . $meta['geo_latitude'][0] . ";";
+	$map .= "window.post_longitude = " . $meta['geo_longitude'][0] . ";";
+	$map .= "</script>";
+
+
+	// Add a map
+	return $content . $map;
+}
 
 //
 // This goes in the add category page

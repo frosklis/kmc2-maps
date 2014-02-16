@@ -97,7 +97,8 @@ function kmc2_maps_content_filter($content) {
 	// if is attachment, try to get the image_metadata
 	if (is_attachment()) {
 		if(!isset($meta['exif_read'])) {
-			$exif = exif_read_data(wp_upload_dir()['basedir'] . '/' . $meta['_wp_attached_file'][0]);
+			$upload_dir = wp_upload_dir();
+			$exif = exif_read_data($upload_dir['basedir'] . '/' . $meta['_wp_attached_file'][0]);
 			update_post_meta($post_id, 'exif_read', 'true');
 
 			if (isset($exif["GPSLongitude"]) && isset($exif["GPSLongitudeRef"])

@@ -3,7 +3,12 @@
 jQuery(document).ready(function () {
     'use strict';
     var map, layer;
-    map = L.map('post_position');
+    map = L.map('post_position',
+		{
+			'scrollWheelZoom': false,
+			'doubleClickZoom': false,
+			'touchZoom': false
+		});
 
     // Using stame map
     layer = new L.StamenTileLayer("watercolor");

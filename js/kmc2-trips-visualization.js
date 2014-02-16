@@ -3,7 +3,12 @@
 jQuery(document).ready(function () {
     'use strict';
     var map, layer;
-    map = L.map('trips-visualization-map');
+    map = L.map('trips-visualization-map',
+		{
+			'scrollWheelZoom': false,
+			'doubleClickZoom': false,
+			'touchZoom': false
+		});
 
     // Using stame map
     // replace "toner" here with "terrain" or "watercolor"

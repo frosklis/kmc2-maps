@@ -344,4 +344,5 @@ add_action( 'wp_ajax_kmc2_country_trips', 'kmc2_country_trips' );
 add_action( 'wp_ajax_nopriv_kmc2_country_trips', 'kmc2_country_trips' );
 
 
+require('metabox.php');
 ?>

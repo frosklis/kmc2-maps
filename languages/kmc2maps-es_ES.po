@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: kmc2maps\n"
-"POT-Creation-Date: 2014-02-16 16:13+0100\n"
-"PO-Revision-Date: 2014-02-16 16:32+0100\n"
+"POT-Creation-Date: 2014-02-16 20:17+0100\n"
+"PO-Revision-Date: 2014-02-16 20:17+0100\n"
 "Last-Translator: Claudio Noguera <claudio.noguera@gmail.com>\n"
 "Language-Team: claudio <claudio@kmc2.tk>\n"
 "MIME-Version: 1.0\n"
@@ -13,29 +13,30 @@ msgstr ""
 "X-Poedit-Basepath: /Users/claudio/Dropbox/Web/kmc2-maps\n"
 "X-Poedit-SearchPath-0: /Users/claudio/Dropbox/Web/kmc2-maps\n"
 
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:98
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:126
+#: /Users/claudio/Dropbox/Web/kmc2-maps/metabox.php:14
 msgid "Where is this?"
 msgstr "¿Dónde es esto?"
 
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:116
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:118
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:151
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:233
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:170
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:172
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:205
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:287
 msgid "Visited countries"
 msgstr "Países visitados"
 
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:122
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:124
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:157
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:176
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:178
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:211
 msgid "Visited places"
 msgstr "Lugares visitados"
 
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:128
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:130
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:182
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:184
 msgid "Round trip?"
 msgstr "¿El viaje empieza y termina en el mismo lugar?"
 
-#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:153
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:207
 msgid ""
 "Visited countries. <a href=\"http://en.wikipedia.org/wiki/"
 "ISO_3166-1_alpha-3\">Three digit code</a>, separated by commas. Example: "
@@ -44,6 +45,22 @@ msgstr ""
 "Países visitados. <a href=\"http://en.wikipedia.org/wiki/"
 "ISO_3166-1_alpha-3\">Código de tres dígitos</a>, separados por comas. "
 "Ejemplo: \"ESP,FRA\""
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/metabox.php:48
+msgid "Place"
+msgstr "Lugar"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/metabox.php:51
+msgid "Get coordinates"
+msgstr "Obtener coordenadas"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/metabox.php:56
+msgid "Latitude"
+msgstr "Latitud"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/metabox.php:62
+msgid "Longitude"
+msgstr "Longitud"
 
 #: /Users/claudio/Dropbox/Web/kmc2-maps/w_trip_visualization.php:15
 msgid ""

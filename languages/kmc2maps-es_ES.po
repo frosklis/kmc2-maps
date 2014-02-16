@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kmc2maps\n"
+"POT-Creation-Date: 2014-02-16 16:13+0100\n"
+"PO-Revision-Date: 2014-02-16 16:32+0100\n"
+"Last-Translator: Claudio Noguera <claudio.noguera@gmail.com>\n"
+"Language-Team: claudio <claudio@kmc2.tk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: __;_e;_n\n"
+"X-Poedit-Basepath: /Users/claudio/Dropbox/Web/kmc2-maps\n"
+"X-Poedit-SearchPath-0: /Users/claudio/Dropbox/Web/kmc2-maps\n"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:98
+msgid "Where is this?"
+msgstr "¿Dónde es esto?"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:116
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:118
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:151
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:233
+msgid "Visited countries"
+msgstr "Países visitados"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:122
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:124
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:157
+msgid "Visited places"
+msgstr "Lugares visitados"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:128
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:130
+msgid "Round trip?"
+msgstr "¿El viaje empieza y termina en el mismo lugar?"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/kmc2_maps.php:153
+msgid ""
+"Visited countries. <a href=\"http://en.wikipedia.org/wiki/"
+"ISO_3166-1_alpha-3\">Three digit code</a>, separated by commas. Example: "
+"\"ESP,FRA\""
+msgstr ""
+"Países visitados. <a href=\"http://en.wikipedia.org/wiki/"
+"ISO_3166-1_alpha-3\">Código de tres dígitos</a>, separados por comas. "
+"Ejemplo: \"ESP,FRA\""
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_trip_visualization.php:15
+msgid ""
+"Visualization of a trip. This widget is only useful when used in a category "
+"page."
+msgstr ""
+"Visualización de un viaje. Este widget sólo es útil en las páginas de "
+"categoría."
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_trip_visualization.php:74
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_viajes.php:82
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visited_countries.php:83
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visualization.php:68
+msgid "New title"
+msgstr "Nuevo título"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_trip_visualization.php:78
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_viajes.php:86
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visited_countries.php:87
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visualization.php:72
+msgid "Title:"
+msgstr "Título:"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_viajes.php:15
+msgid "Trips we've made"
+msgstr "Viajes que hemos hecho"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visited_countries.php:15
+msgid "Map showing visited countries"
+msgstr "Mapa que muestra los países visitados"
+
+#: /Users/claudio/Dropbox/Web/kmc2-maps/w_visualization.php:15
+msgid "Visualization of our trips"
+msgstr "Visualización de nuestros viajes"

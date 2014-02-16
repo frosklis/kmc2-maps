@@ -45,7 +45,6 @@ if(!class_exists('KmC2_Maps')) {
 				add_filter( 'manage_category_custom_column', 'categoriesColumnsRow', 10, 3 );
 			}
 
-
 		} // END public function __construct
 		public static function activate() {
 			// Do nothing
@@ -74,6 +73,7 @@ function kmc2_load_post_maps( $query ) {
 }
 add_action( 'pre_get_posts', 'kmc2_load_post_maps' );
 
+
 if(class_exists('KmC2_Maps')) {
 	// Installation and uninstallation hooks
 	register_activation_hook(__FILE__, array('KmC2_Maps', 'activate'));
@@ -82,6 +82,12 @@ if(class_exists('KmC2_Maps')) {
 	// instantiate the plugin
 	$maps_plugin = new KmC2_Maps();
 }
+function kmc2_maps_init() {
+	load_plugin_textdomain('kmc2maps', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+	error_log(basename( dirname( __FILE__ ) ) . '/languages/');
+}
+add_action('plugins_loaded', 'kmc2_maps_init');
+
 
 
 function kmc2_maps_content_filter($content) {
@@ -94,7 +100,8 @@ function kmc2_maps_content_filter($content) {
 		return $content;
 	}
 
-	$map = "<div id='post_position'></div>";
+	$map = "<h3>" . __('Where is this?', 'kmc2maps') . "</h3>";
+	$map .= "<div id='post_position'></div>";
 	$map .= "<script type='text/javascript'>";
 	$map .= "window.post_latitude = " . $meta['geo_latitude'][0] . ";";
 	$map .= "window.post_longitude = " . $meta['geo_longitude'][0] . ";";

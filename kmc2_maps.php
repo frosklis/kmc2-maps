@@ -91,26 +91,75 @@ function kmc2_maps_content_filter($content) {
 		return $content;
 	}
 
-	$meta = get_post_meta( get_the_ID() );
+	$post_id = get_the_ID();
+	$meta = get_post_meta( $post_id );
+
+	// if is attachment, try to get the image_metadata
+	if (is_attachment()) {
+		if(!isset($meta['exif_read'])) {
+			$exif = exif_read_data(wp_upload_dir()['basedir'] . '/' . $meta['_wp_attached_file'][0]);
+			update_post_meta($post_id, 'exif_read', 'true');
+
+			if (isset($exif["GPSLongitude"]) && isset($exif["GPSLongitudeRef"])
+				&& isset($exif["GPSLatitude"]) && isset($exif["GPSLatitudeRef"]))
+			{
+				$lon = getGps($exif["GPSLongitude"], $exif['GPSLongitudeRef']);
+				$lat = getGps($exif["GPSLatitude"], $exif['GPSLatitudeRef']);
+
+				update_post_meta($post_id, 'geo_latitude', $lat);
+				update_post_meta($post_id, 'geo_longitude', $lon);
+
+
+				$meta = get_post_meta( $post_id );
+			}
+		}
+	}
+
 	if (!(isset($meta['geo_latitude']) && isset($meta['geo_longitude']))) {
 		return $content;
 	}
 
-	$map = "<h3>" . __('Where is this?', 'kmc2maps') . "</h3>";
+	// Add a map
+	$map = "";
+	if (!is_attachment()) {
+		$map .= "<h3>" . __('Where is this?', 'kmc2maps') . "</h3>";
+	}
 	$map .= "<div id='post_position'></div>";
 	$map .= "<script type='text/javascript'>";
 	$map .= "window.post_latitude = " . $meta['geo_latitude'][0] . ";";
 	$map .= "window.post_longitude = " . $meta['geo_longitude'][0] . ";";
 	$map .= "</script>";
 
-	wp_enqueue_script('kmc2-post-map');
 
+	wp_enqueue_script('kmc2-post-map');
 	wp_enqueue_style('kmc2-maps');
 	wp_enqueue_style('leaflet');
-	// Add a map
+
 	return $content . $map;
 }
+function getGps($exifCoord, $hemi) {
+    $degrees = count($exifCoord) > 0 ? gps2Num($exifCoord[0]) : 0;
+    $minutes = count($exifCoord) > 1 ? gps2Num($exifCoord[1]) : 0;
+    $seconds = count($exifCoord) > 2 ? gps2Num($exifCoord[2]) : 0;
 
+    $flip = ($hemi == 'W' or $hemi == 'S') ? -1 : 1;
+
+    return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
+
+}
+
+function gps2Num($coordPart) {
+
+    $parts = explode('/', $coordPart);
+
+    if (count($parts) <= 0)
+        return 0;
+
+    if (count($parts) == 1)
+        return $parts[0];
+
+    return floatval($parts[0]) / floatval($parts[1]);
+}
 //
 // This goes in the add category page
 //

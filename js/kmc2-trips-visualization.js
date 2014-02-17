@@ -9,8 +9,20 @@ jQuery(document).ready(function () {
 		{
 			'scrollWheelZoom': false,
 			'doubleClickZoom': false,
-			'touchZoom': false
+			'touchZoom': false,
+            'fullscreenControl': true
 		});
+    map.on ('enterFullscreen', function() {
+        map.scrollWheelZoom.enable();
+        map.doubleClickZoom.enable();
+        map.touchZoom.enable();
+    });
+
+    map.on ('exitFullscreen', function() {
+        map.scrollWheelZoom.disable();
+        map.doubleClickZoom.disable();
+        map.touchZoom.disable();
+    });
 
     // Using stame map
     // replace "toner" here with "terrain" or "watercolor"

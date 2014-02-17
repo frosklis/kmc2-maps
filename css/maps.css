@@ -100,3 +100,10 @@
 #post_position img {
   max-height: none;
 }
+.leaflet-control-zoom-fullscreen {
+  background-image: url(../lib/images/icon-fullscreen.png);
+}
+.leaflet-container:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+}

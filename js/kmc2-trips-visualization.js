@@ -40,7 +40,7 @@ jQuery(document).ready(function () {
             d = jQuery.parseJSON(d);
             for (i = 0; i < d.length; i++) {
                 a = d[i];
-                title = '<a href="' + a.guid + '">' + a.post_title + '</a>';
+                title = '<a href="' + kmc2_visualization_vars.siteurl + '?p=' + a.id + '">' + a.post_title + '</a>';
                 marker = L.marker(L.latLng(a.geo_latitude, a.geo_longitude), { title: title });
                 marker.bindPopup(title);
                 markers.addLayer(marker);

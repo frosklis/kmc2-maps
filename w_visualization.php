@@ -113,9 +113,9 @@ function kmc2_posts_location() {
 	global $wpdb;
 	$prefix = $wpdb->prefix;
 
-	$query ="select post.id, post.post_title, post.guid, post.post_type, meta.geo_latitude, meta.geo_longitude
+	$query ="select post.id, post.post_title, post.post_type, meta.geo_latitude, meta.geo_longitude
 		from
-		(select id, post_title, guid, post_type
+		(select id, post_title, post_type
 		from " . $prefix . "posts
 		where post_status = 'publish'  or post_type = 'attachment') post,
 		 (select a.post_id, a.meta_value as geo_latitude, b.meta_value as geo_longitude

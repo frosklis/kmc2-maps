@@ -28,6 +28,9 @@ jQuery(document).ready(function () {
         //         return new L.DivIcon({ html: '<b>' + cluster.getChildCount() + '</b>' });
         //     }
         // }
+        {
+            maxClusterRadius: 20
+        }
     );
 
     jQuery.ajax({

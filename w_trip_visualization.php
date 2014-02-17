@@ -127,4 +127,5 @@ function kmc2_trip_places() {
 }
 add_action( 'wp_ajax_kmc2_trip_places', 'kmc2_trip_places' );
 add_action( 'wp_ajax_nopriv_kmc2_trip_places', 'kmc2_trip_places' );
+
 ?>

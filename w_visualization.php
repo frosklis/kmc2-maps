@@ -43,6 +43,7 @@ class Kmc2_Visualization extends WP_Widget {
 
 	    wp_enqueue_style('kmc2-maps');
 	    wp_enqueue_style('leaflet');
+	    wp_enqueue_style('leaflet-cluster');
 
 		echo $args['before_widget'];
 		if ( !empty( $title ) ){
@@ -94,17 +95,41 @@ class Kmc2_Visualization extends WP_Widget {
 
 	public function register_scripts_and_styles () {
 		// adding scripts file in the footer
-	    wp_register_script( 'leaflet-tiles', 'http://maps.stamen.com/js/tile.stamen.js?v1.2.4', '', '', true );
 	    wp_register_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js', '', '', true );
-		wp_register_script( 'trips-visualization', plugins_url( 'kmc2-maps/js/kmc2-trips-visualization.min.js' , ''), array( 'jquery', 'leaflet', 'leaflet-tiles' ), '', true );
+	    wp_register_script( 'leaflet-tiles', 'http://maps.stamen.com/js/tile.stamen.js?v1.2.4', array('leaflet'), '', true );
+	    wp_register_script ('leaflet-cluster', plugins_url( 'kmc2-maps/lib/leaflet.markercluster.js' , ''), array('leaflet'), '', true);
+		wp_register_script( 'trips-visualization', plugins_url( 'kmc2-maps/js/kmc2-trips-visualization.min.js' , ''), array( 'jquery', 'leaflet', 'leaflet-tiles', 'leaflet-cluster' ), '', true );
 
 		// register styles
 	    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
 	    wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
+	    wp_register_style ('leaflet-cluster', plugins_url( 'kmc2-maps/css/markercluster.css' , ''), array(), '', 'all' );
 
 	}
 
 } // class Kmc2_Visualization
 
+function kmc2_posts_location() {
+	global $wpdb;
+	$prefix = $wpdb->prefix;
 
+	$query ="select post.id, post.post_title, post.guid, post.post_type, meta.geo_latitude, meta.geo_longitude
+		from
+		(select id, post_title, guid, post_type
+		from " . $prefix . "posts
+		where post_status = 'publish') post,
+		 (select a.post_id, a.meta_value as geo_latitude, b.meta_value as geo_longitude
+		from " . $prefix . "postmeta a, " . $prefix . "postmeta b
+		where a.meta_key = 'geo_latitude' and b.meta_key = 'geo_longitude'
+		and a.post_id = b.post_id) meta
+		where post.id = meta.post_id";
+	;
+
+	$results = $wpdb->get_results($query, ARRAY_A);
+
+	die(json_encode($results));
+
+}
+add_action( 'wp_ajax_kmc2_posts_location', 'kmc2_posts_location' );
+add_action( 'wp_ajax_nopriv_kmc2_posts_location', 'kmc2_posts_location' );
 ?>

@@ -120,13 +120,13 @@ function kmc2_posts_location() {
 		where post_status = 'publish') post,
 		 (select a.post_id, a.meta_value as geo_latitude, b.meta_value as geo_longitude
 		from " . $prefix . "postmeta a, " . $prefix . "postmeta b
-		where a.meta_key = 'geo_latitude' and b.meta_key = 'geo_longitude'
+		where a.meta_key = 'geo_latitude' and a.meta_value != ''
+		and b.meta_key = 'geo_longitude' and b.meta_value != ''
 		and a.post_id = b.post_id) meta
 		where post.id = meta.post_id";
 	;
 
 	$results = $wpdb->get_results($query, ARRAY_A);
-
 	die(json_encode($results));
 
 }

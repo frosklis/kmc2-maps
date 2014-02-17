@@ -95,24 +95,21 @@ function kmc2_maps_content_filter($content) {
 	$meta = get_post_meta( $post_id );
 
 	// if is attachment, try to get the image_metadata
-	if (is_attachment()) {
-		if(!isset($meta['exif_read'])) {
-			$upload_dir = wp_upload_dir();
-			$exif = exif_read_data($upload_dir['basedir'] . '/' . $meta['_wp_attached_file'][0]);
-			update_post_meta($post_id, 'exif_read', 'true');
+	if (!(isset($meta['geo_latitude']) && isset($meta['geo_longitude'])) && is_attachment()) {
+		$upload_dir = wp_upload_dir();
+		$exif = exif_read_data($upload_dir['basedir'] . '/' . $meta['_wp_attached_file'][0]);
 
-			if (isset($exif["GPSLongitude"]) && isset($exif["GPSLongitudeRef"])
-				&& isset($exif["GPSLatitude"]) && isset($exif["GPSLatitudeRef"]))
-			{
-				$lon = getGps($exif["GPSLongitude"], $exif['GPSLongitudeRef']);
-				$lat = getGps($exif["GPSLatitude"], $exif['GPSLatitudeRef']);
+		if (isset($exif["GPSLongitude"]) && isset($exif["GPSLongitudeRef"])
+			&& isset($exif["GPSLatitude"]) && isset($exif["GPSLatitudeRef"]))
+		{
+			$lon = getGps($exif["GPSLongitude"], $exif['GPSLongitudeRef']);
+			$lat = getGps($exif["GPSLatitude"], $exif['GPSLatitudeRef']);
 
-				update_post_meta($post_id, 'geo_latitude', $lat);
-				update_post_meta($post_id, 'geo_longitude', $lon);
+			update_post_meta($post_id, 'geo_latitude', $lat);
+			update_post_meta($post_id, 'geo_longitude', $lon);
 
 
-				$meta = get_post_meta( $post_id );
-			}
+			$meta = get_post_meta( $post_id );
 		}
 	}
 

@@ -29,7 +29,7 @@ jQuery(document).ready(function () {
         //     }
         // }
         {
-            maxClusterRadius: 20
+            maxClusterRadius: 50
         }
     );
 

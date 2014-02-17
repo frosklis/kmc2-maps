@@ -117,7 +117,7 @@ function kmc2_posts_location() {
 		from
 		(select id, post_title, guid, post_type
 		from " . $prefix . "posts
-		where post_status = 'publish') post,
+		where post_status = 'publish'  or post_type = 'attachment') post,
 		 (select a.post_id, a.meta_value as geo_latitude, b.meta_value as geo_longitude
 		from " . $prefix . "postmeta a, " . $prefix . "postmeta b
 		where a.meta_key = 'geo_latitude' and a.meta_value != ''

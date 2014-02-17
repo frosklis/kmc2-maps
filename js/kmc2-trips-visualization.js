@@ -36,7 +36,6 @@ jQuery(document).ready(function () {
             for (i = 0; i < d.length; i++) {
                 a = d[i];
                 title = '<a href="' + a.guid + '">' + a.post_title + '</a>';
-                console.log(title);
                 marker = L.marker(L.latLng(a.geo_latitude, a.geo_longitude), { title: title });
                 marker.bindPopup(title);
                 markers.addLayer(marker);

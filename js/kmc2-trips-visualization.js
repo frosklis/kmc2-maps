@@ -21,12 +21,14 @@ jQuery(document).ready(function () {
 
 
     // Add clusters of posts and pictures!
-    markers = L.markerClusterGroup({
-        chunkedLoading: true,
-        iconCreateFunction: function(cluster) {
-            return new L.DivIcon({ html: '<b>' + cluster.getChildCount() + '</b>' });
-        }
-    });
+    markers = L.markerClusterGroup(
+        // {
+        //     chunkedLoading: true,
+        //     iconCreateFunction: function(cluster) {
+        //         return new L.DivIcon({ html: '<b>' + cluster.getChildCount() + '</b>' });
+        //     }
+        // }
+    );
 
     jQuery.ajax({
         type: "POST",

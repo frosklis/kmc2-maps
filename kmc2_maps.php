@@ -117,6 +117,12 @@ function kmc2_maps_content_filter($content) {
 		return $content;
 	}
 
+	if ($meta['geo_latitude'][0] == '' || $meta['geo_longitude'][0] == '') {
+		delete_post_meta($post_id, 'geo_latitude');
+		delete_post_meta($post_id, 'geo_longitude');
+		return $content;
+	}
+
 	// Add a map
 	$map = "";
 	if (!is_attachment()) {

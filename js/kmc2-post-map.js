@@ -3,6 +3,10 @@
 jQuery(document).ready(function () {
     'use strict';
     var map, layer;
+
+	if (jQuery('#post_position').length === 0) {
+		return false;
+	}
     map = L.map('post_position',
 		{
 			'scrollWheelZoom': false,

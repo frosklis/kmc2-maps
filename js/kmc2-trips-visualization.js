@@ -5,6 +5,12 @@ jQuery(document).ready(function () {
     var map, layer, markers, marker, i, a, title, ajaxUrl;
 
     ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php';
+
+
+    if (jQuery('#trips-visualization-map').length === 0) {
+        return false;
+    }
+
     map = L.map('trips-visualization-map',
 		{
 			'scrollWheelZoom': false,

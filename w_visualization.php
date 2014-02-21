@@ -31,20 +31,6 @@ class Kmc2_Visualization extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		// enqueue styles and scripts
-
-	    wp_localize_script('trips-visualization', 'kmc2_visualization_vars',
-	    	array(
-				'basepath' => plugins_url('kmc2-maps/',''),
-				'siteurl' => home_url( '/' )
-			)
-		);
-
-	    wp_enqueue_script('trips-visualization');
-
-	    wp_enqueue_style('kmc2-maps');
-	    wp_enqueue_style('leaflet');
-	    wp_enqueue_style('leaflet-cluster');
-
 		echo $args['before_widget'];
 		if ( !empty( $title ) ){
 			echo $args['before_title'] . $title . $args['after_title'];
@@ -105,6 +91,21 @@ class Kmc2_Visualization extends WP_Widget {
 	    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
 	    wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
 	    wp_register_style ('leaflet-cluster', plugins_url( 'kmc2-maps/css/markercluster.css' , ''), array(), '', 'all' );
+
+
+	    wp_localize_script('trips-visualization', 'kmc2_visualization_vars',
+	    	array(
+				'basepath' => plugins_url('kmc2-maps/',''),
+				'siteurl' => home_url( '/' )
+			)
+		);
+
+	    wp_enqueue_script('trips-visualization');
+
+	    wp_enqueue_style('kmc2-maps');
+	    wp_enqueue_style('leaflet');
+	    wp_enqueue_style('leaflet-cluster');
+
 
 	}
 

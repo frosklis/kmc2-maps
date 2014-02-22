@@ -115,3 +115,4 @@ function kmc2_maps_save_post_location( $post_id ) {
 	update_post_meta( $post_id, 'geo_longitude', $lon );
 }
 add_action( 'save_post', 'kmc2_maps_save_post_location' );
+add_action( 'edit_attachment', 'kmc2_maps_save_post_location' );

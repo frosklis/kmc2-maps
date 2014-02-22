@@ -64,6 +64,8 @@ function kmc2_maps_inner_location_box( $post ) {
 	echo '<td><input type="text" id="kmc2_maps_lon" name="kmc2_maps_lon" value="' . esc_attr( $lon ) . '" size="25" /></td><td></td>';
 	echo '</tr>';
 	echo '</table>';
+
+	echo '<div id="map_edit_post_location" style="height: 300px;"></div>';
 }
 
 /**

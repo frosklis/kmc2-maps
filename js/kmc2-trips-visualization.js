@@ -35,7 +35,7 @@ jQuery(document).ready(function () {
     layer = new L.StamenTileLayer("watercolor");
     map.addLayer(layer);
 
-	map.setView(L.latLng(30, 0), 2);
+	map.fitWorld();
 
 
     // Add clusters of posts and pictures!
@@ -63,7 +63,9 @@ jQuery(document).ready(function () {
                 marker.bindPopup(title);
                 markers.addLayer(marker);
             }
-
+            map.fitBounds(markers.getBounds(), {
+                'padding': [10, 10]
+            });
         }
     });
     map.addLayer(markers);

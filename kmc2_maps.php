@@ -97,10 +97,14 @@ function kmc2_maps_content_filter($content) {
 	$meta = get_post_meta( $post_id );
 
 	// if is attachment, try to get the image_metadata
-	if (!(isset($meta['geo_latitude']) && isset($meta['geo_longitude'])) && is_attachment() && strpos(get_post_mime_type($post_id), "image") !== false) {
+	if (!(isset($meta['geo_latitude']) && isset($meta['geo_longitude'])) && is_attachment()) {
 		$upload_dir = wp_upload_dir();
 
 		$exif = exif_read_data($upload_dir['basedir'] . '/' . $meta['_wp_attached_file'][0]);
+
+		if ($exif === false) {
+			return $content;
+		}
 
 		if (isset($exif["GPSLongitude"]) && isset($exif["GPSLongitudeRef"])
 			&& isset($exif["GPSLatitude"]) && isset($exif["GPSLatitudeRef"]))

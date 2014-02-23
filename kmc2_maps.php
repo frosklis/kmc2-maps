@@ -65,7 +65,8 @@ function kmc2_load_post_maps( $query ) {
 
 		// register styles
 		wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
-		wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css",array(), '', 'all' );
+		// wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css",array(), '', 'all' );
+	    wp_register_style ('leaflet', plugins_url( 'kmc2-maps/css/leaflet.css' , ''), array(), '', 'all' );
 
 		wp_enqueue_script('kmc2-post-map');
 		wp_enqueue_style('kmc2-maps');

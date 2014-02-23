@@ -89,7 +89,8 @@ class Kmc2_Visualization extends WP_Widget {
 
 		// register styles
 	    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
-	    wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
+	    // wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
+	    wp_register_style ('leaflet', plugins_url( 'kmc2-maps/css/leaflet.css' , ''), array(), '', 'all' );
 	    wp_register_style ('leaflet-cluster', plugins_url( 'kmc2-maps/css/markercluster.css' , ''), array(), '', 'all' );
 
 

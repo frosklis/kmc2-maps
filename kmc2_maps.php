@@ -59,7 +59,8 @@ function kmc2_load_post_maps( $query ) {
 	if ($query->is_single()) {
 		// wp_register_script( 'leaflet-tiles', 'http://maps.stamen.com/js/tile.stamen.js?v1.2.4', '', '', true );
 		wp_register_script( 'leaflet-tiles', plugins_url( 'kmc2-maps/lib/tile.stamen.min.js' , ''), '', '', true );
-		wp_register_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js', '', '', true );
+		// wp_register_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js', '', '', true );
+		wp_register_script( 'leaflet', plugins_url( 'kmc2-maps/lib/leaflet.min.js', ''), '', '', true );
 		wp_register_script( 'kmc2-post-map', plugins_url( 'kmc2-maps/js/kmc2-post-map.min.js' , ''), array( 'leaflet', 'leaflet-tiles' ), '', true );
 
 		// register styles

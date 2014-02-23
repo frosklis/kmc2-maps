@@ -81,8 +81,8 @@ class Kmc2_Visualization extends WP_Widget {
 
 	public function register_scripts_and_styles () {
 		// adding scripts file in the footer
-	    wp_register_script( 'leaflet', 'http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js', '', '', true );
-	    wp_register_script( 'leaflet-tiles', 'http://maps.stamen.com/js/tile.stamen.js?v1.2.4', array('leaflet'), '', true );
+		wp_register_script( 'leaflet-tiles', plugins_url( 'kmc2-maps/lib/tile.stamen.min.js' , ''), '', '', true );
+		wp_register_script( 'leaflet', plugins_url( 'kmc2-maps/lib/leaflet.min.js', ''), '', '', true );
 	    wp_register_script ('leaflet-cluster', plugins_url( 'kmc2-maps/lib/leaflet.markercluster.js' , ''), array('leaflet'), '', true);
 	    wp_register_script ('leaflet-fullscreen', plugins_url( 'kmc2-maps/lib/Control.Fullscreen.min.js' , ''), array('leaflet'), '', true);
 		wp_register_script( 'trips-visualization', plugins_url( 'kmc2-maps/js/kmc2-trips-visualization.min.js' , ''), array( 'jquery', 'leaflet', 'leaflet-tiles', 'leaflet-cluster', 'leaflet-fullscreen' ), '', true );

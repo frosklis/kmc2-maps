@@ -88,9 +88,11 @@
 .kmc2-maps-plugin .maps-container .highlight:hover {
   fill: #f01d4f;
 }
+#trip-map,
 #trips-visualization-map {
   height: 400px;
 }
+#trip-map img,
 #trips-visualization-map img {
   max-height: none;
 }

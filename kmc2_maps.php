@@ -83,6 +83,7 @@ if(class_exists('KmC2_Maps')) {
 
 	// instantiate the plugin
 	$maps_plugin = new KmC2_Maps();
+
 }
 function kmc2_maps_init() {
 	load_plugin_textdomain('kmc2maps', false, basename( dirname( __FILE__ ) ) . '/languages/' );

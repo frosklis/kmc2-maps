@@ -18,7 +18,6 @@ class Kmc2_Visualization extends WP_Widget {
 		if ( is_active_widget(false, false, $this->id_base) ) {
 			$this->register_scripts_and_styles();
     	}
-
 	}
 
 	/**

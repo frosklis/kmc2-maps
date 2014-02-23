@@ -30,21 +30,15 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		// enqueue styles and scripts
-	    wp_enqueue_script('d3');
-	    wp_enqueue_script('d3-geo-projection');
-	    wp_enqueue_script('topojson');
 
-	    wp_localize_script('kmc2-trip-visualization', 'kmc2_visualization_vars',
+
+	    wp_localize_script('trip-visualization', 'kmc2_visualization_vars',
 	    	array(
 				'basepath' => plugins_url('kmc2-maps/',''),
 				'siteurl' => home_url( '/' ),
 				'category_id' => intval(get_query_var('cat'))
 			)
 		);
-
-	    wp_enqueue_script('kmc2-trip-visualization');
-	    wp_enqueue_style('kmc2-maps');
 
 		if (!empty($instance['title'])){
 			$title = apply_filters( 'widget_title', $instance['title'] );
@@ -54,7 +48,7 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 		if ( !empty( $title ) ){
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		echo('<div class="kmc2-maps-plugin"><div class="trip-map">');
+		echo('<div class="kmc2-maps-plugin"><div id="trip-map">');
 		echo('</div></div>');
 		echo $args['after_widget'];
 	}
@@ -99,17 +93,25 @@ class Kmc2_Trip_Visualization extends WP_Widget {
 	}
 
 	public function register_scripts_and_styles () {
-		//adding scripts file in the footer
-	    // con plugins_url( 'js/d3.v3.min.js' , __FILE__ )
-	    wp_register_script( 'd3', plugins_url( 'kmc2-maps/lib/d3.v3.min.js' , ''), '', '', true );
-	    // wp_register_script( 'queue', plugins_url( 'kmc2-maps/lib/queue.v1.min.js' , ''), '', '', true );
-	    wp_register_script( 'd3-geo-projection', plugins_url( 'kmc2-maps/lib/d3.geo.projection.v0.min.js' , ''), '', '', true );
-	    wp_register_script( 'topojson', plugins_url( 'kmc2-maps/lib/topojson.v1.min.js' , ''), '', '', true );
-		wp_register_script( 'kmc2-trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.min.js' , ''), array( 'jquery','d3', 'd3-geo-projection', 'topojson' ), '', true );
-
+	    // adding scripts file in the footer
+		wp_register_script( 'leaflet-tiles', plugins_url( 'kmc2-maps/lib/tile.stamen.min.js' , ''), '', '', true );
+		wp_register_script( 'leaflet', plugins_url( 'kmc2-maps/lib/leaflet.min.js', ''), '', '', true );
+	    wp_register_script ('leaflet-cluster', plugins_url( 'kmc2-maps/lib/leaflet.markercluster.js' , ''), array('leaflet'), '', true);
+	    wp_register_script ('leaflet-fullscreen', plugins_url( 'kmc2-maps/lib/Control.Fullscreen.min.js' , ''), array('leaflet'), '', true);
+		wp_register_script( 'trip-visualization', plugins_url( 'kmc2-maps/js/kmc2-trip-visualization.min.js' , ''), array( 'jquery', 'leaflet', 'leaflet-tiles', 'leaflet-cluster', 'leaflet-fullscreen' ), '', true );
 
 		// register styles
 	    wp_register_style( 'kmc2-maps', plugins_url( 'kmc2-maps/css/maps.css' , ''), array(), '', 'all' );
+	    // wp_register_style( 'leaflet', "http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css");
+	    wp_register_style ('leaflet', plugins_url( 'kmc2-maps/css/leaflet.css' , ''), array(), '', 'all' );
+	    wp_register_style ('leaflet-cluster', plugins_url( 'kmc2-maps/css/markercluster.css' , ''), array(), '', 'all' );
+
+
+	    wp_enqueue_script('trip-visualization');
+
+	    wp_enqueue_style('kmc2-maps');
+	    wp_enqueue_style('leaflet');
+	    wp_enqueue_style('leaflet-cluster');
 
 	}
 

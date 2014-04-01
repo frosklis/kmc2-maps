@@ -2,7 +2,7 @@
 /*jslint bitwise: true*/
 jQuery(document).ready(function () {
     'use strict';
-    var map, layer, markers, marker, i, a, title, ajaxUrl;
+    var map, layer, markers, marker, i, a, title, ajaxUrl, Acetate_labels;
 
     ajaxUrl = kmc2_visualization_vars.siteurl + 'wp-admin/admin-ajax.php';
 
@@ -15,8 +15,8 @@ jQuery(document).ready(function () {
 		{
 			'scrollWheelZoom': false,
 			'doubleClickZoom': false,
-			'touchZoom': false,
-            'fullscreenControl': true
+			'touchZoom': false
+            // 'fullscreenControl': true
 		});
     map.on ('enterFullscreen', function() {
         map.scrollWheelZoom.enable();
@@ -35,20 +35,42 @@ jQuery(document).ready(function () {
     layer = new L.StamenTileLayer("watercolor");
     map.addLayer(layer);
 
+
+    Acetate_labels = L.tileLayer('http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png', {
+        attribution: '&copy;2012 Esri & Stamen, Data from OSM and Natural Earth',
+        subdomains: '0123',
+        minZoom: 2,
+        maxZoom: 18
+    });
+
+    map.addLayer(Acetate_labels);
+
 	map.fitWorld();
 
 
     // Add clusters of posts and pictures!
     markers = L.markerClusterGroup(
-        // {
-        //     chunkedLoading: true,
-        //     iconCreateFunction: function(cluster) {
-        //         return new L.DivIcon({ html: '<b>' + cluster.getChildCount() + '</b>' });
-        //     }
-        // }
         {
-            maxClusterRadius: 50
+            chunkedLoading: true,
+            iconCreateFunction: function(cluster) {
+                var childCount = cluster.getChildCount();
+
+                var c = ' marker-cluster-';
+                if (childCount < 10) {
+                    c += 'small';
+                } else if (childCount < 100) {
+                    c += 'medium';
+                } else {
+                    c += 'large';
+                }
+
+                // return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+                return new L.DivIcon({ html: '<div></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+            }
         }
+        // {
+        //     maxClusterRadius: 50
+        // }
     );
 
     jQuery.ajax({
